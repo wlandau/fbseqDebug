@@ -1,0 +1,25 @@
+---
+title: "`heterosisDebug` usage guide"
+author: Will Landau
+date: 2015
+output: 
+  rmarkdown::html_vignette:
+    number_sections: true
+    toc: true
+vignette: >
+  \VignetteEngine{knitr::rmarkdown}
+  \VignetteIndexEntry{`heterosisDebug` usage guide}
+  \usepackage[utf8]{inputenc}
+---
+
+The `heterosisDebug`
+
+
+# Purpose
+
+`heterosisStudies` is a companion package for debugging the `heterosis` and `heterosisCUDA` packages, available on [GitHub](https://github.com/wlandau). You will need both of these packages installed, and `heterosisCUDA` requires CUDA. See the `heterosisCUDA` package vignette for more details.
+
+# Checking full conditionals
+
+
+The `full_conditionals_diag()` function uses both real maize data and simulated data to check each MCMC parameter against its true full conditional distribution and output relevant plots. For the histograms, MCMC samples are plotted with the true full conditional density overlayed as a line. Traceplots are also output. 

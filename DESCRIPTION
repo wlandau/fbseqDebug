@@ -1,0 +1,30 @@
+Package: fbseqDebug
+Title: fbseqDebug
+Description: Companion package for debugging the fbseq and fbseqCUDA
+    packages.
+URL: https://github.com/wlandau/fbseqDebug
+Version: 0.0
+Author: Will Landau <will.landau@gmail.com>
+Maintainer: Will Landau <will.landau@gmail.com>
+Depends:
+    R (>= 3.0.0),
+    fbseq,
+    methods
+Imports:
+    coda,
+    ggplot2,
+    pracma
+Suggests:
+    fbseqCUDA,
+    knitr
+VignetteBuilder: knitr
+License: GPL (>= 3)
+Collate:
+    'compare_points.R'
+    'credible_debug.R'
+    'full_conditionals_utils.R'
+    'full_conditionals_check.R'
+    'full_conditionals.R'
+    'namespace.R'
+    'paschold_mcmc.R'
+    'simulated_mcmc.R'
