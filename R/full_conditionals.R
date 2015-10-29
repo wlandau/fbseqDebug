@@ -2,7 +2,7 @@
 NULL
 
 #' @title Function \code{sample_full_conditionals}
-#' @description Get MCMC samples using the \code{fbseq} package.
+#' @description Get MCMC libraries using the \code{fbseq} package.
 #' @export
 #' @param dir directory for output files
 #' @param counts RNA-seq count data matrix
@@ -22,8 +22,9 @@ sample_full_conditionals = function(dir, counts, design, starts = Starts(), prio
     gse = sample.int(G, 4)
 
    configs = Configs(diag = "none", ess = 0, burnin = 1e3, iterations = 1e4, thin = 0, priors = priors,
-                                samples_return = ns, features_return = gs, samples_return_eps = nse, features_return_eps = gse,
+                                libraries_return = ns, genes_return = gs, libraries_return_epsilon = nse, genes_return_epsilon  = gse,
                                 parameter_sets_return = "beta", parameter_sets_update = "beta")
+
 
   for(l in 1:L){
     v = paste0("beta_", l)
@@ -52,30 +53,31 @@ sample_full_conditionals = function(dir, counts, design, starts = Starts(), prio
     runtimes = rbind(runtimes, t1)
     saveRDS(chain, file)
   }
-  rownames(runtimes) = vars
+  rownames(runtimes) = c(paste0("beta_", 1:L), vars)
   print(runtimes)
 }
 
 
 
 #' @title Function \code{plot_full_conditionals}
-#' @description Plot MCMC samples against their full conditional densities and make traceplots.
+#' @description Plot MCMC libraries against their full conditional densities and make traceplots.
 #' @export
 #' @param dir directory for output files
 plot_full_conditionals = function(dir){
   setwd(paste0(dir, "plots"))
-  for(name in gsub(".rds", "", list.files("../chains/"))){
+  for(file in list.files("../chains/")){
+    path = paste0("../chains/", file)
+    name = gsub(".rds", "", file)
     if(grepl("beta", name)){
-      if(file.exists(file)){
-        chain = readRDS(file)
+      if(file.exists(path)){
+        chain = readRDS(path)
         beta_check(chain)
       }
       next
     }
 
-    file = paste0("../chains/", name, ".rds")
-    if(file.exists(file)){
-      chain = readRDS(file)
+    if(file.exists(path)){
+      chain = readRDS(path)
       get(paste0(name, "_check"))(chain)
     }
   }
@@ -83,7 +85,7 @@ plot_full_conditionals = function(dir){
 }
 
 #' @title Function \code{full_conditionals_paschold}
-#' @description Get MCMC samples from Paschold data.
+#' @description Get MCMC libraries from Paschold data.
 #' @export
 #' @param priors name of prior distributions on the phi's, alpha's, and delta's.
 full_conditionals_paschold = function(priors = "Laplace"){
@@ -97,19 +99,19 @@ full_conditionals_paschold = function(priors = "Laplace"){
 }
 
 #' @title Function \code{full_conditionals_simulated}
-#' @description Get MCMC samples from simulated data.
+#' @description Get MCMC libraries from simulated data.
 #' @export
 #' @param priors name of prior distributions on the phi's, alpha's, and delta's.
 full_conditionals_simulated = function(priors = "Laplace"){
   stopifnot(priors %in% alternate_priors())
   dir = paste0(priors, "_full_conditionals_simulated/")
   make_dirs(dir)
-  gen = generate_data(priors = priors)
+  gen = generate_data()
   sample_full_conditionals(dir, gen$counts, gen$design, starts = gen$truth, priors = priors)
 }
 
 #' @title Function \code{full_conditionals}
-#' @description Check MCMC samples against their full conditionals.
+#' @description Check MCMC libraries against their full conditionals.
 #' @export
 #' @param priors names of prior distributions to try for phi, alpha, and delta.
 full_conditionals = function(priors = alternate_priors()){

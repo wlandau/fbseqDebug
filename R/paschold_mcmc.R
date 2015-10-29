@@ -4,10 +4,9 @@
 #' @param priors alternate prior to try for phi, alpha, and delta
 #' @param diag can be "geweke", "gelman", or "none"
 paschold_mcmc = function(priors = c("normal", alternate_priors()), diag = "none"){
-  data(paschold_counts)
-  data(paschold_group)
+  data(paschold)
   counts = get("paschold_counts")
-  group = get("paschold_group")  
+  design = get("paschold_design")  
   features = dim(counts)[1]
 
   for(prior in priors){
@@ -15,8 +14,8 @@ paschold_mcmc = function(priors = c("normal", alternate_priors()), diag = "none"
     if(!file.exists(dir)) dir.create(dir)
     setwd(dir)
 
-    configs = Configs(diag = diag, max_attempts = 10, phiPrior = prior, alpPrior = prior, delPrior = prior)
-    chain = Chain(counts, group, configs)
+    configs = Configs(diag = diag, max_attempts = 10, priors = prior)
+    chain = Chain(counts, design, configs)
     chain = fbseq(chain)
 
     saveRDS(chain, paste0("chain_", prior, ".rds"))

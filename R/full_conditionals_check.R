@@ -6,24 +6,23 @@ NULL
 #' @export
 #' @param chain a \code{fbseq::Chain} object
 beta_check = function(chain){
-  attach(inits(chain), warn.conflicts = F)
+  Z = inits(chain)
   l = chain@effects_update
   name = paste0("beta_", l)
   bpm = matrix(chain@betaPostMean, nrow = chain@G)
   bpmsq = matrix(chain@betaPostMeanSquare, nrow = chain@G)
 
-  for(v in colnames(flat)[grep(name, colnames(flat))]){
-    x = as.numeric(flat[,v])
-    ind = as.integer(strsplit(gsub(paste0(name, "_"), "", v), split = "_")[[1]])
-    g = ind[2]
+  for(v in colnames(Z$flat)[grep(name, colnames(Z$flat))]){
+    x = as.numeric(Z$flat[,v])
+    g = as.integer(strsplit(gsub(paste0(name, "_"), "", v), split = "_")[[1]])
 
-    A = sum(y[g, ]*design[,l])
-    B = s@theta[l]
-    C = 2*s@sigmaSquared[l] * s@xi[g, l]
+    A = sum(Z$y[g, ]*Z$design[,l])
+    B = 1/(2*Z$s@sigmaSquared[l] * Z$xi[g, l])
+    C = Z$s@theta[l]
 
-    lkern = function(x){
-      A*x - (x - B)^2/C + sum(exp(epsilon[g,] + design %*% beta[g,] ))
-    }
+    lkern = Vectorize(function(x){
+      A*x - B* (x - C)^2 - sum(exp(Z$design[,l] * x) * exp( Z$epsilon[g, ] + Z$design[,-l] %*% Z$beta[g, -l]))
+    }, "x")
 
     plotfc(x, lkern, v, bpm[g, l], sqrt(bpmsq[g, l]))
   }
@@ -34,7 +33,8 @@ beta_check = function(chain){
 #' @export
 #' @param chain a \code{fbseq::Chain} object
 epsilon_check = function(chain){
-  attach(inits(chain), warn.conflicts = F)
+  Z = inits(chain)
+  attach(Z, warn.conflicts = F)
   epm = matrix(chain@epsilonPostMean, nrow = G)
   epmsq = matrix(chain@epsilonPostMeanSquare, nrow = G)
   for(v in colnames(flat)){
@@ -44,8 +44,8 @@ epsilon_check = function(chain){
     g = ind[2]
 
     A = y[g, n]
-    C = 2*s@rho[n]*s@gam[g]
-    D = exp(eta(n, g, s, group))
+    C = 2*s@rho[n]*s@gamma[g]
+    D = exp(sum(design[n,] * Z$beta[g,]))
 
     lkern = function(x){A*x - x^2/C - D*exp(x)}
     plotfc(x, lkern, v, epm[g, n], sqrt(epmsq[g, n]))
@@ -66,7 +66,7 @@ gamma_check = function(chain){
     scale = (s@nuGamma[1]*s@tauGamma[1] + sum(epsilon[g,]^2/s@rho))/2
 
     lkern = function(x){ldig(x, shape, scale)}
-    plotfc(x, lkern, v, chain@gamPostMean[g], sqrt(chain@gamPostMeanSquare[g]))
+    plotfc(x, lkern, v, chain@gammaPostMean[g], sqrt(chain@gammaPostMeanSquare[g]))
   }
 }
 
@@ -80,7 +80,7 @@ nuGamma_check = function(chain){
     G*(-lgamma(x/2) + (x/2) * log(x*s@tauGamma[1]/2)) - 
     (x/2) * sum(log(s@gamma) + s@tauGamma[1]/s@gamma)
   }
-  plotfc(as.numeric(flat), lkern, name, chain@nuGamPostMean, sqrt(chain@nuGamPostMeanSquare))
+  plotfc(as.numeric(flat), lkern, name, chain@nuGammaPostMean, sqrt(chain@nuGammaPostMeanSquare))
 }
 
 #' @title \code{*_check} functions
@@ -106,7 +106,6 @@ rho_check = function(chain){
     x = as.numeric(flat[,v])
     n = as.integer(gsub(paste0(name, "_"), "", v))
    
-    x = x^2
     shape = (G + s@nuRho[1])/2
     scale = (s@nuRho[1]*s@tauRho[1] + sum(epsilon[,n]^2/s@gamma))/2
 
@@ -120,14 +119,15 @@ rho_check = function(chain){
 #' @export
 #' @param chain a \code{fbseq::Chain} object
 sigmaSquared_check = function(chain){
-  attach(inits(chain), warn.conflicts = F)
+  Z = inits(chain)
+  attach(Z, warn.conflicts = F)
   for(v in colnames(flat)){
     x = as.numeric(flat[,v])
     l = as.integer(gsub(paste0(name, "_"), "", v))
     shape = (G - 1)/2
-    scale = 0.5 * sum((beta[,l] - s@theta[l])^2/xi[,l])
+    scale = 0.5 * sum((Z$beta[,l] - s@theta[l])^2/xi[,l])
     lkern = function(x){ldig(x, shape, scale)}
-    plotfc(x, lkern, name, chain@sigmaSquaredPostMean, sqrt(chain@sigmaSquaredPostMeanSquare))
+    plotfc(x, lkern, v, chain@sigmaSquaredPostMean[l], sqrt(chain@sigmaSquaredPostMeanSquare[l]))
   }
 }
 
@@ -140,7 +140,7 @@ tauGamma_check = function(chain){
   shape = s@aGamma + G*s@nuGamma/2
   rate = s@bGamma + (s@nuGamma/2) * sum(1/s@gamma)
   lkern = function(x){dgamma(x, shape = shape, rate = rate, log = T)}
-  plotfc(as.numeric(flat), lkern, name, chain@tauGammaPostMean, sqrt(chain@tauGamPostMeanSquare))
+  plotfc(as.numeric(flat), lkern, name, chain@tauGammaPostMean, sqrt(chain@tauGammaPostMeanSquare))
 }
 
 #' @title \code{*_check} functions
@@ -160,14 +160,15 @@ tauRho_check = function(chain){
 #' @export
 #' @param chain a \code{fbseq::Chain} object
 theta_check = function(chain){
-  attach(inits(chain), warn.conflicts = F)
+  Z = inits(chain)
+  attach(Z, warn.conflicts = F)
   for(v in colnames(flat)){
     x = as.numeric(flat[,v])
     l = as.integer(gsub(paste0(name, "_"), "", v))
     A = (1/s@c[l] + (1/s@sigmaSquared[l]) * sum(1/xi[,l]))/2
-    B = (1/s@sigmaSquared[l]) * sum(beta[,l]/xi[,l])
+    B = (1/s@sigmaSquared[l]) * sum(Z$beta[,l]/xi[,l])
     lkern = function(x){dnorm(x, mean = B/(2*A), sd = sqrt(1/(2*A)), log = T)}
-    plotfc(x, lkern, name, chain@thetaPostMean, sqrt(chain@thetaPostMeanSquare))
+    plotfc(x, lkern, v, chain@thetaPostMean[l], sqrt(chain@thetaPostMeanSquare[l]))
   }
 }
 
@@ -176,15 +177,19 @@ theta_check = function(chain){
 #' @export
 #' @param chain a \code{fbseq::Chain} object
 xi_check = function(chain){
-  attach(inits(chain), warn.conflicts = F)
+  Z = inits(chain)
+  attach(Z, warn.conflicts = F)
   for(v in colnames(flat)){
     x = as.numeric(flat[,v])
     ind = as.integer(strsplit(gsub(paste0(name, "_"), "", v), split = "_")[[1]])
     l = ind[1]
     g = ind[2]
    
+    xipm = matrix(chain@xiPostMean, nrow = chain@G)
+    xipmsq = matrix(chain@xiPostMeanSquare, nrow = chain@G)
+
     prior = alternate_priors()[chain@priors[l]]
-    z = (s@beta[g, l] - s@theta[l])^2/(2 * s@sigmaSquared[l])
+    z = (Z$beta[g, l] - s@theta[l])^2/(2 * s@sigmaSquared[l])
     if(prior == "Laplace") {
       a = z
       b = s@k[l]
@@ -199,6 +204,6 @@ xi_check = function(chain){
       lkern = function(x){ifelse(x > 0.9 & x < 1.1, 1, 0)}
     }
 
-    plotfc(x, lkern, v, chain@xiPostMean[g, l], sqrt(chain@xiPostMeanSquare[g, l]))
+    plotfc(x, lkern, v, xipm[g, l], sqrt(xipmsq[g, l]))
   }
 }
