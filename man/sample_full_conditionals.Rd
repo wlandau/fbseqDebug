@@ -4,7 +4,7 @@
 \alias{sample_full_conditionals}
 \title{Function \code{sample_full_conditionals}}
 \usage{
-sample_full_conditionals(dir, counts, group, starts = Starts(),
+sample_full_conditionals(dir, counts, design, starts = Starts(),
   priors = "Laplace")
 }
 \arguments{
@@ -12,10 +12,7 @@ sample_full_conditionals(dir, counts, group, starts = Starts(),
 
 \item{counts}{RNA-seq count data matrix}
 
-\item{group}{Experimental design. A vector of integers,
-one for each RNA-seq sample/library, denoting the genetic
-variety of that sample. You must use 1 for parent 1, 2 for the hybrid,
-and 3 for parent 2.}
+\item{design}{Design matrix. See the \code{fbseq} package vignette for details.}
 
 \item{starts}{A \code{fbseq::Starts} object of MCMC starting values.}
 

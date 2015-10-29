@@ -4,36 +4,19 @@
 #' @return a list of things the \code{check_*} functions need
 #' @param chain a \code{fbseq::Chain} object.
 inits = function(chain){
-  group = chain@group
   s = Starts(chain)
-  y = matrix(chain@counts, ncol = length(group))
-
   list(chain = chain,
-        eps = matrix(s@eps, nrow = dim(y)[1]),
+        beta = matrix(s@beta, nrow = chain@G),
+        epsilon = matrix(s@epsilon, nrow = chain@G),
+        xi = matrix(s@xi, ncol = chain@L),
         flat = as.matrix(flatten(chain)),
         G = dim(y)[1],
-        group = group,
-        N = length(group),
-        name = names(which(chain@updates == 1)),
+        design = matrix(design, ncol = chain@L),
+        N = chain@N,
+        L = chain@L,
+        name = names(which(chain@parameter_sets_update == 1)),
         s = s,
-        y = y)
-}
-
-#' @title Function \code{eta}
-#' @description Phi_g - alpha_g, phi_g + delta_g, or phi_g + alpha_g, depending on the library \code{n}. 
-#' @export
-#' @return Phi_g - alpha_g, phi_g + delta_g, or phi_g + alpha_g, depending on the library \code{n}. 
-#' @param n library
-#' @param g gene
-#' @param s a \code{Starts} object
-#' @param group Experimental design. A vector of integers,
-#' one for each RNA-seq sample/library, denoting the genetic
-#' variety of that sample. You must use 1 for parent 1, 2 for parent 2,
-#' and 3 for the hybrid.
-eta = function(n, g, s, group){
-  if(group[n] == 1) return(s@phi[g] + s@alp[g] - s@del[g])
-  if(group[n] == 2) return(s@phi[g] - s@alp[g] + s@del[g])
-  if(group[n] == 3) return(s@phi[g] + s@alp[g] + s@del[g])
+        y = matrix(chain@counts, ncol = chain@N))
 }
 
 #' @title Function \code{plotfc}
