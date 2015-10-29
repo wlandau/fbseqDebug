@@ -31,6 +31,7 @@ sample_full_conditionals = function(dir, counts, design, starts = Starts(), prio
     print(v)
     configs@effects_update = l
     chain = Chain(counts, design, configs, starts)
+    chain@xiStart = runif(length(chain@xiStart), 0.5, 1.5)
     file = paste0(dir, "chains/", v, ".rds")
     t0 = proc.time()
     chain = fbseq(chain)
@@ -45,6 +46,7 @@ sample_full_conditionals = function(dir, counts, design, starts = Starts(), prio
     print(v)
     configs@parameter_sets_return = configs@parameter_sets_update = v
     chain = Chain(counts, design, configs, starts)
+    chain@xiStart = runif(length(chain@xiStart), 0.5, 1.5)
     file = paste0(dir, "chains/", v, ".rds")
     t0 = proc.time()
     chain = fbseq(chain)
