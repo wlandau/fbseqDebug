@@ -44,8 +44,8 @@ epsilon_check = function(chain){
     g = ind[2]
 
     A = y[g, n]
-    B = 1/(2*s@rho[n]*s@gamma[g])
-    C = chain@h[n]
+    B = 1/(2*s@gamma[g])
+    C = s@rho[n]
     D = exp(sum(design[n,] * Z$beta[g,]))
 
     lkern = function(x){A*x - B*(x-C)^2 - D*exp(x)}
@@ -64,7 +64,7 @@ gamma_check = function(chain){
     g = as.integer(gsub(paste0(name, "_"), "", v))
 
     shape = (N + s@nu[1])/2
-    scale = (s@nu[1]*s@tau[1] + sum((epsilon[g,] - chain@h)^2/s@rho))/2
+    scale = (s@nu[1]*s@tau[1] + sum((epsilon[g,] - s@rho)^2)/2
 
     lkern = function(x){ldig(x, shape, scale)}
     plotfc(x, lkern, v, chain@gammaPostMean[g], sqrt(chain@gammaPostMeanSquare[g]))
