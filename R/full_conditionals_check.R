@@ -64,7 +64,7 @@ gamma_check = function(chain){
     g = as.integer(gsub(paste0(name, "_"), "", v))
 
     shape = (N + s@nu[1])/2
-    scale = (s@nu[1]*s@tau[1] + sum((epsilon[g,] - s@rho)^2)/2
+    scale = (s@nu[1]*s@tau[1] + sum((epsilon[g,] - s@rho)^2))/2
 
     lkern = function(x){ldig(x, shape, scale)}
     plotfc(x, lkern, v, chain@gammaPostMean[g], sqrt(chain@gammaPostMeanSquare[g]))
