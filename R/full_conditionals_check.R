@@ -45,7 +45,7 @@ epsilon_check = function(chain){
 
     A = y[g, n]
     B = 1/(2*s@rho[n]*s@gamma[g])
-    C = chain@psi[n]
+    C = s@psi[n]
     D = exp(sum(design[n,] * Z$beta[g,]))
 
     lkern = function(x){A*x - B*(x-C)^2 - D*exp(x)}
@@ -63,8 +63,8 @@ psi_check = function(chain){
   for(v in colnames(flat)){
     x = as.numeric(flat[,v])
     n = as.integer(gsub(paste0(name, "_"), "", v))
-    A = (1/s@omegaSquared + sum(1/s@gamma))/2
-    B = sum(Z$epsilon[,n]/s@gamma)
+    A = (1/s@omegaSquared + (1/s@rho[n]) * sum(1/s@gamma))/2
+    B = (1/s@rho[n]) * sum(Z$epsilon[,n]/s@gamma)
     lkern = function(x){dnorm(x, mean = B/(2*A), sd = sqrt(1/(2*A)), log = T)}
     plotfc(x, lkern, v, chain@psiPostMean[n], sqrt(chain@psiPostMeanSquare[n]))
   }
@@ -97,7 +97,7 @@ gamma_check = function(chain){
     g = as.integer(gsub(paste0(name, "_"), "", v))
 
     shape = (N + s@nuGamma[1])/2
-    scale = (s@nuGamma[1]*s@tauGamma[1] + sum((epsilon[g,] - chain@psi)^2/s@rho))/2
+    scale = (s@nuGamma[1]*s@tauGamma[1] + sum((epsilon[g,] - s@psi)^2/s@rho))/2
 
     lkern = function(x){ldig(x, shape, scale)}
     plotfc(x, lkern, v, chain@gammaPostMean[g], sqrt(chain@gammaPostMeanSquare[g]))
@@ -141,7 +141,7 @@ rho_check = function(chain){
     n = as.integer(gsub(paste0(name, "_"), "", v))
    
     shape = (G + s@nuRho[1])/2
-    scale = (s@nuRho[1]*s@tauRho[1] + sum((epsilon[,n] - chain@psi[n])^2/s@gamma))/2
+    scale = (s@nuRho[1]*s@tauRho[1] + sum((epsilon[,n] - s@psi[n])^2/s@gamma))/2
 
     lkern = function(x){ldig(x, shape, scale)}
     plotfc(x, lkern, v, chain@rhoPostMean[n], sqrt(chain@rhoPostMeanSquare[n]))
