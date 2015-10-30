@@ -14,7 +14,7 @@ paschold_mcmc = function(priors = c("normal", alternate_priors()), diag = "none"
     if(!file.exists(dir)) dir.create(dir)
     setwd(dir)
 
-    configs = Configs(diag = diag, max_attempts = 10, priors = prior)
+    configs = Configs(diag = diag, max_attempts = 10, priors = prior, nchains_diag = 4)
     chain = Chain(counts, design, configs)
     chain = fbseq(chain)
 

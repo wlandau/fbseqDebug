@@ -17,7 +17,7 @@ simulated_mcmc = function(priors = c("normal", alternate_priors()), diag = "none
     d = generate_data(genes = genes, libraries = libraries)
     saveRDS(d, paste0("data_", prior, ".rds"))
 
-    configs = Configs(diag = diag, max_attempts = 10, priors = prior)
+    configs = Configs(diag = diag, max_attempts = 10, priors = prior, nchains_diag = 4)
     chain = Chain(d$counts, d$design, configs)
     chain = fbseq(chain)
 
