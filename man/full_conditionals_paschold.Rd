@@ -10,6 +10,6 @@ full_conditionals_paschold(priors = "Laplace")
 \item{priors}{name of prior distributions on the phi's, alpha's, and delta's.}
 }
 \description{
-Get MCMC samples from Paschold data.
+Get MCMC libraries from Paschold data.
 }
 

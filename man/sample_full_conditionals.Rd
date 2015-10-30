@@ -19,6 +19,6 @@ sample_full_conditionals(dir, counts, design, starts = Starts(),
 \item{priors}{name of prior distributions on the phi's, alpha's, and delta's.}
 }
 \description{
-Get MCMC samples using the \code{fbseq} package.
+Get MCMC libraries using the \code{fbseq} package.
 }
 

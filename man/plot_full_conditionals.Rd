@@ -10,6 +10,6 @@ plot_full_conditionals(dir)
 \item{dir}{directory for output files}
 }
 \description{
-Plot MCMC samples against their full conditional densities and make traceplots.
+Plot MCMC libraries against their full conditional densities and make traceplots.
 }
 
