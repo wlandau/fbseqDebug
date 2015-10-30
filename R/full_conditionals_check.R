@@ -166,7 +166,7 @@ theta_check = function(chain){
   for(v in colnames(flat)){
     x = as.numeric(flat[,v])
     l = as.integer(gsub(paste0(name, "_"), "", v))
-    A = (1/s@c[l] + (1/s@sigmaSquared[l]) * sum(1/xi[,l]))/2
+    A = (1/(s@c[l]^2) + (1/s@sigmaSquared[l]) * sum(1/xi[,l]))/2
     B = (1/s@sigmaSquared[l]) * sum(Z$beta[,l]/xi[,l])
     lkern = function(x){dnorm(x, mean = B/(2*A), sd = sqrt(1/(2*A)), log = T)}
     plotfc(x, lkern, v, chain@thetaPostMean[l], sqrt(chain@thetaPostMeanSquare[l]))
