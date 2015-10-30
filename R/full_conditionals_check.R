@@ -44,10 +44,11 @@ epsilon_check = function(chain){
     g = ind[2]
 
     A = y[g, n]
-    C = 2*s@rho[n]*s@gamma[g]
+    B = 1/(2*s@rho[n]*s@gamma[g])
+    C = chain@h[n]
     D = exp(sum(design[n,] * Z$beta[g,]))
 
-    lkern = function(x){A*x - x^2/C - D*exp(x)}
+    lkern = function(x){A*x - B*(x-C)^2 - D*exp(x)}
     plotfc(x, lkern, v, epm[g, n], sqrt(epmsq[g, n]))
   }
 }
@@ -63,7 +64,7 @@ gamma_check = function(chain){
     g = as.integer(gsub(paste0(name, "_"), "", v))
 
     shape = (N + s@nuGamma[1])/2
-    scale = (s@nuGamma[1]*s@tauGamma[1] + sum(epsilon[g,]^2/s@rho))/2
+    scale = (s@nuGamma[1]*s@tauGamma[1] + sum((epsilon[g,] - chain@h)^2/s@rho))/2
 
     lkern = function(x){ldig(x, shape, scale)}
     plotfc(x, lkern, v, chain@gammaPostMean[g], sqrt(chain@gammaPostMeanSquare[g]))
@@ -107,7 +108,7 @@ rho_check = function(chain){
     n = as.integer(gsub(paste0(name, "_"), "", v))
    
     shape = (G + s@nuRho[1])/2
-    scale = (s@nuRho[1]*s@tauRho[1] + sum(epsilon[,n]^2/s@gamma))/2
+    scale = (s@nuRho[1]*s@tauRho[1] + sum((epsilon[,n] - chain@h[n])^2/s@gamma))/2
 
     lkern = function(x){ldig(x, shape, scale)}
     plotfc(x, lkern, v, chain@rhoPostMean[n], sqrt(chain@rhoPostMeanSquare[n]))
