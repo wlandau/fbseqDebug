@@ -110,8 +110,8 @@ rho_check = function(chain){
   for(v in colnames(flat)){
     x = as.numeric(flat[,v])
     n = as.integer(gsub(paste0(name, "_"), "", v))
-    A = (1/(s@w^2) + (1/s@omegaSquared) * sum(1/s@gamma))/2
-    B = (1/s@omegaSquared) * sum(Z$epsilon[,n]/s@gamma)
+    A = (1/s@omegaSquared + sum(1/s@gamma))/2
+    B = sum(Z$epsilon[,n]/s@gamma)
     lkern = function(x){dnorm(x, mean = B/(2*A), sd = sqrt(1/(2*A)), log = T)}
     plotfc(x, lkern, v, chain@rhoPostMean[n], sqrt(chain@rhoPostMeanSquare[n]))
   }
