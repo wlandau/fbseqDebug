@@ -63,8 +63,8 @@ gamma_check = function(chain){
     x = as.numeric(flat[,v])
     g = as.integer(gsub(paste0(name, "_"), "", v))
 
-    shape = (N + s@nuGamma[1])/2
-    scale = (s@nuGamma[1]*s@tauGamma[1] + sum((epsilon[g,] - chain@h)^2/s@rho))/2
+    shape = (N + s@nu[1])/2
+    scale = (s@nu[1]*s@tau[1] + sum((epsilon[g,] - chain@h)^2/s@rho))/2
 
     lkern = function(x){ldig(x, shape, scale)}
     plotfc(x, lkern, v, chain@gammaPostMean[g], sqrt(chain@gammaPostMeanSquare[g]))
@@ -75,26 +75,29 @@ gamma_check = function(chain){
 #' @description Check MCMC parameter samples against the true full conditional.
 #' @export
 #' @param chain a \code{fbseq::Chain} object
-nuGamma_check = function(chain){
+omegaSquared_check = function(chain){
   attach(inits(chain), warn.conflicts = F)
-  lkern = function(x){
-    G*(-lgamma(x/2) + (x/2) * log(x*s@tauGamma[1]/2)) - 
-    (x/2) * sum(log(s@gamma) + s@tauGamma[1]/s@gamma)
-  }
-  plotfc(as.numeric(flat), lkern, name, chain@nuGammaPostMean, sqrt(chain@nuGammaPostMeanSquare))
+  v = "omegaSquared"
+  x = as.numeric(flat[,v])
+
+  shape = (N - 1)/2
+  scale = sum(s@rho^2)/2
+
+  lkern = function(x){ldig(x, shape, scale)}
+  plotfc(x, lkern, v, chain@omegaSquaredPostMean, sqrt(chain@omegaSquaredPostMeanSquare))
 }
 
 #' @title \code{*_check} functions
 #' @description Check MCMC parameter samples against the true full conditional.
 #' @export
 #' @param chain a \code{fbseq::Chain} object
-nuRho_check = function(chain){
+nu_check = function(chain){
   attach(inits(chain), warn.conflicts = F)
   lkern = function(x){
-    N*(-lgamma(x/2) + (x/2) * log(x*s@tauRho[1]/2)) - 
-    (x/2) * sum(log(s@rho) + s@tauRho[1]/s@rho)
+    G*(-lgamma(x/2) + (x/2) * log(x*s@tau[1]/2)) - 
+    (x/2) * sum(log(s@gamma) + s@tau[1]/s@gamma)
   }
-  plotfc(as.numeric(flat), lkern, name, chain@nuRhoPostMean, sqrt(chain@nuRhoPostMeanSquare))
+  plotfc(as.numeric(flat), lkern, name, chain@nuPostMean, sqrt(chain@nuPostMeanSquare))
 }
 
 #' @title \code{*_check} functions
@@ -102,15 +105,14 @@ nuRho_check = function(chain){
 #' @export
 #' @param chain a \code{fbseq::Chain} object
 rho_check = function(chain){
-  attach(inits(chain), warn.conflicts = F)
+  Z = inits(chain)
+  attach(Z, warn.conflicts = F)
   for(v in colnames(flat)){
     x = as.numeric(flat[,v])
     n = as.integer(gsub(paste0(name, "_"), "", v))
-   
-    shape = (G + s@nuRho[1])/2
-    scale = (s@nuRho[1]*s@tauRho[1] + sum((epsilon[,n] - chain@h[n])^2/s@gamma))/2
-
-    lkern = function(x){ldig(x, shape, scale)}
+    A = (1/(s@w^2) + (1/s@omegaSquared) * sum(1/s@gamma))/2
+    B = (1/s@omegaSquared) * sum(Z$epsilon[,n]/s@gamma)
+    lkern = function(x){dnorm(x, mean = B/(2*A), sd = sqrt(1/(2*A)), log = T)}
     plotfc(x, lkern, v, chain@rhoPostMean[n], sqrt(chain@rhoPostMeanSquare[n]))
   }
 }
@@ -136,24 +138,12 @@ sigmaSquared_check = function(chain){
 #' @description Check MCMC parameter samples against the true full conditional.
 #' @export
 #' @param chain a \code{fbseq::Chain} object
-tauGamma_check = function(chain){
+tau_check = function(chain){
   attach(inits(chain), warn.conflicts = F)
-  shape = s@aGamma + G*s@nuGamma/2
-  rate = s@bGamma + (s@nuGamma/2) * sum(1/s@gamma)
+  shape = s@aGamma + G*s@nu/2
+  rate = s@bGamma + (s@nu/2) * sum(1/s@gamma)
   lkern = function(x){dgamma(x, shape = shape, rate = rate, log = T)}
-  plotfc(as.numeric(flat), lkern, name, chain@tauGammaPostMean, sqrt(chain@tauGammaPostMeanSquare))
-}
-
-#' @title \code{*_check} functions
-#' @description Check MCMC parameter samples against the true full conditional.
-#' @export
-#' @param chain a \code{fbseq::Chain} object
-tauRho_check = function(chain){
-  attach(inits(chain), warn.conflicts = F)
-  shape = s@aRho + N*s@nuRho/2
-  rate = s@bRho + (s@nuRho/2) * sum(1/s@rho)
-  lkern = function(x){dgamma(x, shape = shape, rate = rate, log = T)}
-  plotfc(as.numeric(flat), lkern, name, chain@tauRhoPostMean, sqrt(chain@tauRhoPostMeanSquare))
+  plotfc(as.numeric(flat), lkern, name, chain@tauPostMean, sqrt(chain@tauPostMeanSquare))
 }
 
 #' @title \code{*_check} functions
@@ -166,7 +156,7 @@ theta_check = function(chain){
   for(v in colnames(flat)){
     x = as.numeric(flat[,v])
     l = as.integer(gsub(paste0(name, "_"), "", v))
-    A = (1/s@c[l] + (1/s@sigmaSquared[l]) * sum(1/xi[,l]))/2
+    A = (1/(s@c[l]^2) + (1/s@sigmaSquared[l]) * sum(1/xi[,l]))/2
     B = (1/s@sigmaSquared[l]) * sum(Z$beta[,l]/xi[,l])
     lkern = function(x){dnorm(x, mean = B/(2*A), sd = sqrt(1/(2*A)), log = T)}
     plotfc(x, lkern, v, chain@thetaPostMean[l], sqrt(chain@thetaPostMeanSquare[l]))
