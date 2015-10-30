@@ -8,7 +8,7 @@ NULL
 #' @param diag can be "geweke" or "gelman"
 simulated_mcmc = function(priors = c("normal", alternate_priors()), diag = "none"){
   libraries = 12
-  genes = 3.5e4
+  genes = 1e3
   for(prior in priors){
     dir = paste0("sim_", prior, "_", diag)
     if(!file.exists(dir)) dir.create(dir)
@@ -17,7 +17,7 @@ simulated_mcmc = function(priors = c("normal", alternate_priors()), diag = "none
     d = generate_data(genes = genes, libraries = libraries)
     saveRDS(d, paste0("data_", prior, ".rds"))
 
-    configs = Configs(diag = diag, max_attempts = 1, priors = prior)
+    configs = Configs(diag = diag, max_attempts = 1, priors = prior, nchains_diag = 2)
     chain = Chain(d$counts, d$design, configs)
     chain = fbseq(chain)
 

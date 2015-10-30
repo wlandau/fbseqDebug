@@ -5,7 +5,7 @@
 #' @param diag can be "geweke", "gelman", or "none"
 paschold_mcmc = function(priors = c("normal", alternate_priors()), diag = "none"){
   data(paschold)
-  counts = get("paschold_counts")
+  counts = get("paschold_counts")[1:1000,]
   design = get("paschold_design")  
 
   for(prior in priors){
@@ -13,7 +13,7 @@ paschold_mcmc = function(priors = c("normal", alternate_priors()), diag = "none"
     if(!file.exists(dir)) dir.create(dir)
     setwd(dir)
 
-    configs = Configs(diag = diag, max_attempts = 1, priors = prior)
+    configs = Configs(diag = diag, max_attempts = 1, priors = prior, nchains_diag = 2)
     chain = Chain(counts, design, configs)
     chain = fbseq(chain)
 
