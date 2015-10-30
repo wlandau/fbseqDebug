@@ -10,6 +10,6 @@ full_conditionals(priors = alternate_priors())
 \item{priors}{names of prior distributions to try for phi, alpha, and delta.}
 }
 \description{
-Check MCMC samples against their full conditionals.
+Check MCMC libraries against their full conditionals.
 }
 

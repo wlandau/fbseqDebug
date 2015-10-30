@@ -10,6 +10,6 @@ full_conditionals_simulated(priors = "Laplace")
 \item{priors}{name of prior distributions on the phi's, alpha's, and delta's.}
 }
 \description{
-Get MCMC samples from simulated data.
+Get MCMC libraries from simulated data.
 }
 
