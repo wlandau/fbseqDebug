@@ -140,8 +140,8 @@ sigmaSquared_check = function(chain){
 #' @param chain a \code{fbseq::Chain} object
 tau_check = function(chain){
   attach(inits(chain), warn.conflicts = F)
-  shape = s@aGamma + G*s@nu/2
-  rate = s@bGamma + (s@nu/2) * sum(1/s@gamma)
+  shape = s@a + G*s@nu/2
+  rate = s@b + (s@nu/2) * sum(1/s@gamma)
   lkern = function(x){dgamma(x, shape = shape, rate = rate, log = T)}
   plotfc(as.numeric(flat), lkern, name, chain@tauPostMean, sqrt(chain@tauPostMeanSquare))
 }
