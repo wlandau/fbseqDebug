@@ -7,6 +7,7 @@ paschold_mcmc = function(priors = c("normal", alternate_priors()), diag = "none"
   data(paschold)
   counts = get("paschold_counts")
   design = get("paschold_design")  
+
   features = dim(counts)[1]
 
   for(prior in priors){
