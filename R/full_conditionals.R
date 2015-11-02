@@ -110,9 +110,7 @@ full_conditionals_simulated = function(priors = "Laplace"){
   stopifnot(priors %in% alternate_priors())
   dir = paste0(priors, "_full_conditionals_simulated/")
   make_dirs(dir)
-  starts = Starts(nu = 10, omegaSquared = 0.01, pi = c(0.5, 0.25, 0.90), sigmaSquared = c(2.25, 0.25, 0.25), tau = 0.1, 
-          theta = c(5, 0, 0))
-  gen = generate_data(starts = starts)
+  gen = generate_data()
   sample_full_conditionals(dir, gen$counts, gen$design, starts = gen$truth, priors = priors)
 }
 

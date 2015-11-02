@@ -18,7 +18,7 @@ beta_check = function(chain){
 
     A = sum(Z$y[g, ]*Z$design[,l])
     B = 1/(2*Z$s@sigmaSquared[l] * Z$xi[g, l])
-    C = Z$s@theta[l]
+    C = Z$delta[g, l] * Z$s@theta[l]
 
     lkern = Vectorize(function(x){
       A*x - B* (x - C)^2 - sum(exp(Z$design[,l] * x) * exp( Z$epsilon[g, ] + Z$design[,-l] %*% Z$beta[g, -l]))
@@ -41,11 +41,11 @@ delta_check = function(chain){
     ind = as.integer(strsplit(gsub(paste0(name, "_"), "", v), split = "_")[[1]])
     l = ind[1]
     g = ind[2]
-    z = -log(1/s@pi[l] - 1) - ((delta[g, l] - s@theta[l])^2 - delta[g, l]^2)/(2 * s@sigmaSquared[l] * xi[g, l])
+    z = -log(1/s@pi[l] - 1) - ((Z$beta[g, l] - s@theta[l])^2 - Z$beta[g, l]^2)/(2 * s@sigmaSquared[l] * xi[g, l])
     p = 1/(1 + exp(-z))
     out = data.frame(p = p, est_p = mean(x == 1))
     write.table(out, file = paste0("sum_", v, ".txt"), row.names = F)
-    pdf(paste0(v, ".pdf"))
+    pdf(paste0("trace_", v, ".pdf"))
     plot(x, pch = ".")
     lines(x = 1:length(x), y = x)
     dev.off()
@@ -168,7 +168,7 @@ sigmaSquared_check = function(chain){
     x = as.numeric(flat[,v])
     l = as.integer(gsub(paste0(name, "_"), "", v))
     shape = (G - 1)/2
-    scale = 0.5 * sum((Z$beta[,l] - s@theta[l])^2/xi[,l])
+    scale = 0.5 * sum((Z$beta[,l] - Z$delta[, l] * s@theta[l])^2/xi[,l])
     lkern = function(x){ldig(x, shape, scale)}
     plotfc(x, lkern, v, chain@sigmaSquaredPostMean[l], sqrt(chain@sigmaSquaredPostMeanSquare[l]))
   }
@@ -196,8 +196,8 @@ theta_check = function(chain){
   for(v in colnames(flat)){
     x = as.numeric(flat[,v])
     l = as.integer(gsub(paste0(name, "_"), "", v))
-    A = (1/(s@c[l]^2) + (1/s@sigmaSquared[l]) * sum(1/xi[,l]))/2
-    B = (1/s@sigmaSquared[l]) * sum(Z$beta[,l]/xi[,l])
+    A = (1/(s@c[l]^2) + (1/s@sigmaSquared[l]) * sum(Z$delta[, l]/xi[,l]))/2
+    B = (1/s@sigmaSquared[l]) * sum(Z$delta[, l] * Z$beta[,l]/xi[,l])
     lkern = function(x){dnorm(x, mean = B/(2*A), sd = sqrt(1/(2*A)), log = T)}
     plotfc(x, lkern, v, chain@thetaPostMean[l], sqrt(chain@thetaPostMeanSquare[l]))
   }
@@ -220,7 +220,7 @@ xi_check = function(chain){
     xipmsq = matrix(chain@xiPostMeanSquare, nrow = chain@G)
 
     prior = alternate_priors()[chain@priors[l]]
-    z = (Z$beta[g, l] - s@theta[l])^2/(2 * s@sigmaSquared[l])
+    z = (Z$beta[g, l] - Z$delta[g, l] * s@theta[l])^2/(2 * s@sigmaSquared[l])
     if(prior == "Laplace") {
       a = z
       b = s@k[l]
