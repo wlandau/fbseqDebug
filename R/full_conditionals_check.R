@@ -104,6 +104,22 @@ nu_check = function(chain){
 #' @description Check MCMC parameter samples against the true full conditional.
 #' @export
 #' @param chain a \code{fbseq::Chain} object
+pi_check = function(chain){
+  Z = inits(chain)
+  attach(Z, warn.conflicts = F)
+  for(v in colnames(flat)){
+    x = as.numeric(flat[,v])
+    l = as.integer(gsub(paste0(name, "_"), "", v))
+    aux  = sum(Z$delta[,l])
+    lkern = function(x){dbeta(x, shape1 = 1 + aux, shape2 = G + 1 - aux, log = T)}
+    plotfc(x, lkern, v, chain@piPostMean[l], sqrt(chain@piPostMeanSquare[l]))
+  }
+}
+
+#' @title \code{*_check} functions
+#' @description Check MCMC parameter samples against the true full conditional.
+#' @export
+#' @param chain a \code{fbseq::Chain} object
 rho_check = function(chain){
   Z = inits(chain)
   attach(Z, warn.conflicts = F)

@@ -7,6 +7,7 @@ inits = function(chain){
   s = Starts(chain)
   list(chain = chain,
         beta = matrix(s@beta, nrow = chain@G),
+        delta = matrix(s@delta, nrow = chain@G),
         epsilon = matrix(s@epsilon, nrow = chain@G),
         xi = matrix(s@xi, ncol = chain@L),
         flat = as.matrix(flatten(chain)),

@@ -97,7 +97,9 @@ full_conditionals_paschold = function(priors = "Laplace"){
   data(paschold)
   counts = get("paschold_counts")
   design = get("paschold_design")
-  sample_full_conditionals(dir, counts, design, priors = priors)
+  chain = Chain(counts, design)
+  chain@piStart = c(0.43, 0, 1)
+  sample_full_conditionals(dir, counts, design, starts = Starts(chain), priors = priors)
 }
 
 #' @title Function \code{full_conditionals_simulated}
@@ -108,7 +110,9 @@ full_conditionals_simulated = function(priors = "Laplace"){
   stopifnot(priors %in% alternate_priors())
   dir = paste0(priors, "_full_conditionals_simulated/")
   make_dirs(dir)
-  gen = generate_data()
+  starts = Starts(nu = 10, omegaSquared = 0.01, pi = c(0.5, 0.25, 0.90), sigmaSquared = c(2.25, 0.25, 0.25), tau = 0.1, 
+          theta = c(5, 0, 0))
+  gen = generate_data(starts = starts)
   sample_full_conditionals(dir, gen$counts, gen$design, starts = gen$truth, priors = priors)
 }
 
