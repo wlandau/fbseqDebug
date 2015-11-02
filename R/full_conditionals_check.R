@@ -28,6 +28,26 @@ beta_check = function(chain){
   }
 }
 
+
+#' @title \code{*_check} functions
+#' @description Check MCMC parameter samples against the true full conditional.
+#' @export
+#' @param chain a \code{fbseq::Chain} object
+delta_check = function(chain){
+  Z = inits(chain)
+  attach(Z, warn.conflicts = F)
+  for(v in colnames(Z$flat)[grep(name, colnames(Z$flat))]){
+    x = as.numeric(flat[,v])
+    ind = as.integer(strsplit(gsub(paste0(name, "_"), "", v), split = "_")[[1]])
+    l = ind[1]
+    g = ind[2]
+    z = -log(1/s@pi[l] - 1) - ((delta[g, l] - s@theta[l])^2 - delta[g, l]^2)/(2 * s@sigmaSquared[l] * xi[g, l])
+    p = 1/(1 + exp(-z))
+    out = data.frame(p = p, est_p = mean(x == 1))
+    write.table(out, file = paste0(v, ".txt"), row.names = F)
+  }
+}
+
 #' @title \code{*_check} functions
 #' @description Check MCMC parameter samples against the true full conditional.
 #' @export
