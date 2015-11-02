@@ -44,7 +44,11 @@ delta_check = function(chain){
     z = -log(1/s@pi[l] - 1) - ((delta[g, l] - s@theta[l])^2 - delta[g, l]^2)/(2 * s@sigmaSquared[l] * xi[g, l])
     p = 1/(1 + exp(-z))
     out = data.frame(p = p, est_p = mean(x == 1))
-    write.table(out, file = paste0(v, ".txt"), row.names = F)
+    write.table(out, file = paste0("sum_", v, ".txt"), row.names = F)
+    pdf(paste0(v, ".pdf"))
+    plot(x, pch = ".")
+    lines(x = 1:length(x), y = x)
+    dev.off()
   }
 }
 
