@@ -59,8 +59,6 @@ sample_full_conditionals = function(dir, counts, design, starts = Starts(), prio
   print(runtimes)
 }
 
-
-
 #' @title Function \code{plot_full_conditionals}
 #' @description Plot MCMC libraries against their full conditional densities and make traceplots.
 #' @export

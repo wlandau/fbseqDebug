@@ -28,7 +28,6 @@ beta_check = function(chain){
   }
 }
 
-
 #' @title \code{*_check} functions
 #' @description Check MCMC parameter samples against the true full conditional.
 #' @export
@@ -134,6 +133,7 @@ pi_check = function(chain){
   for(v in colnames(flat)){
     x = as.numeric(flat[,v])
     l = as.integer(gsub(paste0(name, "_"), "", v))
+    if(!chain@p[l]) next
     aux  = sum(Z$delta[,l])
     lkern = function(x){dbeta(x, shape1 = 1 + aux, shape2 = G + 1 - aux, log = T)}
     plotfc(x, lkern, v, chain@piPostMean[l], sqrt(chain@piPostMeanSquare[l]))

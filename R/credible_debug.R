@@ -24,14 +24,17 @@ credible_debug = function(priors = c("normal", alternate_priors()), diag = "none
     chain = fbseq(chain)
     saveRDS(chain, "chain.rds")
 
-    flat = flatten(chain)
     est = estimates(chain)$params
+    flat = flatten(chain)
 
-    for(name in colnames(flat)){
+    for(name in colnames(flat)){    
       x = flat[,name]
+      if(length(unique(x)) < 2) next 
       qlow = quantile(x, 0.025)
       qhigh = quantile(x, 0.975)
-      x = x[x > quantile(x, 0.0025) & x < quantile(x, 0.9975)]
+      if(length(unique(x)) > 2){
+        x = x[x > quantile(x, 0.0025) & x < quantile(x, 0.9975)]
+      }
       df = data.frame(x = x)
 
       pl = ggplot(data = df) + 
