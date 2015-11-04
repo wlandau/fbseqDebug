@@ -14,15 +14,15 @@ simulated_mcmc = function(priors = c("normal", alternate_priors()), diag = "none
     if(!file.exists(dir)) dir.create(dir)
     setwd(dir)
 
-    d = generate_data(genes = genes, libraries = libraries)
-    saveRDS(d, paste0("data_", prior, ".rds"))
+    s = scenario_heterosis_model(genes = genes, libraries = libraries)
+    saveRDS(s, paste0("scenario_", prior, ".rds"))
 
     configs = Configs(diag = diag, max_attempts = 10, priors = prior, nchains_diag = 4)
-    chain = Chain(d$counts, d$design, configs)
+    chain = Chain(s, configs)
     chain = fbseq(chain)
 
     saveRDS(chain, paste0("chain_", prior, ".rds"))
-    comp = compare_points(chain, d$truth)
+    comp = compare_points(chain, s@supplement$truth)
     write.table(comp, file = paste0("mcmc_vs_truth_", prior, ".txt"))
     flat = mcmc(flatten(chain))
     pdf(paste0("trace_", prior, ".pdf"))
