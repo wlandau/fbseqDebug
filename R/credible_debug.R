@@ -23,7 +23,7 @@ credible_debug = function(priors = c("normal", alternate_priors()), diag = "none
     saveRDS(chain, "chain.rds")
 
     flat = flatten(chain)
-    est = estimates(chain)$params
+    est = estimates(chain)
 
     for(name in colnames(flat)){
       x = flat[,name]
