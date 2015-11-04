@@ -15,7 +15,7 @@ credible_debug = function(priors = c("normal", alternate_priors()), diag = "none
     N = dim(paschold@counts)[2]
     G = dim(paschold@counts)[1]
 
-    configs = Configs(diag = "none", ess = 0, priors = prior, 
+    configs = Configs(diag = "none", ess = 0, priors = prior, iterations = 1e3, thin = 10, burnin = 1e3,
       genes_return = sample.int(G, 12), libraries_return = sample.int(N, 12),
       genes_return_epsilon = sample.int(G, 4), libraries_return_epsilon = sample.int(N, 3))
     chain = Chain(paschold, configs)
@@ -29,7 +29,8 @@ credible_debug = function(priors = c("normal", alternate_priors()), diag = "none
       x = flat[,name]
       qlow = quantile(x, 0.025)
       qhigh = quantile(x, 0.975)
-      x = x[x > quantile(x, 0.0025) & x < quantile(x, 0.9975)]
+      if(length(unique(x)) > 3)
+        x = x[x > quantile(x, 0.0025) & x < quantile(x, 0.9975)]
       df = data.frame(x = x)
 
       pl = ggplot(data = df) + 

@@ -7,7 +7,7 @@ NULL
 #' @param chain a \code{fbseq::Chain} object
 beta_check = function(chain){
   Z = inits(chain)
-  l = chain@effects_update
+  l = chain@betas_update
   name = paste0("beta_", l)
   bpm = matrix(chain@betaPostMean, nrow = chain@G)
   bpmsq = matrix(chain@betaPostMeanSquare, nrow = chain@G)
