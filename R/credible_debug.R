@@ -12,8 +12,8 @@ credible_debug = function(priors = c("normal", alternate_priors()), diag = "none
     if(!file.exists(dir)) dir.create(dir)
     setwd(dir)
 
-    N = dim(counts)[2]
-    G = dim(counts)[1]
+    N = dim(paschold@counts)[2]
+    G = dim(paschold@counts)[1]
 
     configs = Configs(diag = "none", ess = 0, priors = prior, 
       genes_return = sample.int(G, 12), libraries_return = sample.int(N, 12),

@@ -43,7 +43,7 @@ sample_full_conditionals = function(dir, scenario, starts = Starts(), priors = "
   for(v in vars){
     print(v)
     configs@parameter_sets_return = configs@parameter_sets_update = v
-    chain = Chain(counts, design, configs, starts)
+    chain = Chain(scenario, configs, starts)
     chain@xiStart = runif(length(chain@xiStart), 0.5, 1.5)
     file = paste0(dir, "chains/", v, ".rds")
     t0 = proc.time()
