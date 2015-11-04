@@ -6,7 +6,7 @@ NULL
 #' @export
 #' @param priors alternate prior to try for phi, alpha, and delta
 #' @param diag can be "geweke" or "gelman"
-simulated_mcmc = function(priors = c("normal", alternate_priors()), diag = "none"){
+simulated_mcmc = function(priors = c("normal", alternate_priors()), diag = "gelman"){
   libraries = 12
   genes = 3.5e4
   for(prior in priors){

@@ -4,7 +4,7 @@
 \alias{simulated_mcmc}
 \title{Function \code{simulated_mcmc}}
 \usage{
-simulated_mcmc(priors = c("normal", alternate_priors()), diag = "none")
+simulated_mcmc(priors = c("normal", alternate_priors()), diag = "gelman")
 }
 \arguments{
 \item{priors}{alternate prior to try for phi, alpha, and delta}

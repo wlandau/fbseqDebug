@@ -4,7 +4,7 @@
 \alias{paschold_mcmc}
 \title{Function \code{paschold_mcmc}}
 \usage{
-paschold_mcmc(priors = c("normal", alternate_priors()), diag = "none")
+paschold_mcmc(priors = c("normal", alternate_priors()), diag = "gelman")
 }
 \arguments{
 \item{priors}{alternate prior to try for phi, alpha, and delta}

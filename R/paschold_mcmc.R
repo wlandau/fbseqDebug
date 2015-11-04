@@ -3,7 +3,7 @@
 #' @export
 #' @param priors alternate prior to try for phi, alpha, and delta
 #' @param diag can be "geweke", "gelman", or "none"
-paschold_mcmc = function(priors = c("normal", alternate_priors()), diag = "none"){
+paschold_mcmc = function(priors = c("normal", alternate_priors()), diag = "gelman"){
   data(paschold)
 
   for(prior in priors){
