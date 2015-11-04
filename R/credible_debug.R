@@ -6,8 +6,6 @@
 #' @param diag can be "geweke", "gelman", or "none"
 credible_debug = function(priors = c("normal", alternate_priors()), diag = "none"){
   data(paschold)
-  counts = get("paschold_counts")
-  design = get("paschold_design")  
 
   for(prior in priors){
     dir = paste0("credible_", prior)
@@ -20,7 +18,7 @@ credible_debug = function(priors = c("normal", alternate_priors()), diag = "none
     configs = Configs(diag = "none", ess = 0, priors = prior, 
       genes_return = sample.int(G, 12), libraries_return = sample.int(N, 12),
       genes_return_epsilon = sample.int(G, 4), libraries_return_epsilon = sample.int(N, 3))
-    chain = Chain(counts, design, configs)
+    chain = Chain(paschold, configs)
     chain = fbseq(chain)
     saveRDS(chain, "chain.rds")
 

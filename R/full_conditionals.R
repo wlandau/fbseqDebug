@@ -5,17 +5,16 @@ NULL
 #' @description Get MCMC libraries using the \code{fbseq} package.
 #' @export
 #' @param dir directory for output files
-#' @param counts RNA-seq count data matrix
-#' @param design Design matrix. See the \code{fbseq} package vignette for details.
+#' @param scenario a \code{fbseq::Scenario} object.
 #' @param starts A \code{fbseq::Starts} object of MCMC starting values.
 #' @param priors name of prior distributions on the phi's, alpha's, and delta's.
-sample_full_conditionals = function(dir, counts, design, starts = Starts(), priors = "Laplace"){
+sample_full_conditionals = function(dir, scenario, starts = Starts(), priors = "Laplace"){
   stopifnot(priors %in% alternate_priors())
   runtimes = NULL
 
-    L = dim(design)[2]
-    N = dim(counts)[2]
-    G = dim(counts)[1]
+    L = dim(scenario@design)[2]
+    N = dim(scenario@counts)[2]
+    G = dim(scenario@counts)[1]
     ns = sample.int(N, 12)
     gs = sample.int(G, 12)
     nse = sample.int(N, 3)
@@ -25,12 +24,11 @@ sample_full_conditionals = function(dir, counts, design, starts = Starts(), prio
                                 libraries_return = ns, genes_return = gs, libraries_return_epsilon = nse, genes_return_epsilon  = gse,
                                 parameter_sets_return = "beta", parameter_sets_update = "beta")
 
-
   for(l in 1:L){
     v = paste0("beta_", l)
     print(v)
-    configs@effects_update = l
-    chain = Chain(counts, design, configs, starts)
+    configs@betas_update = l
+    chain = Chain(scenario, configs, starts)
     chain@xiStart = runif(length(chain@xiStart), 0.5, 1.5)
     file = paste0(dir, "chains/", v, ".rds")
     t0 = proc.time()
@@ -58,8 +56,6 @@ sample_full_conditionals = function(dir, counts, design, starts = Starts(), prio
   rownames(runtimes) = c(paste0("beta_", 1:L), vars)
   print(runtimes)
 }
-
-
 
 #' @title Function \code{plot_full_conditionals}
 #' @description Plot MCMC libraries against their full conditional densities and make traceplots.
@@ -95,9 +91,7 @@ full_conditionals_paschold = function(priors = "Laplace"){
   dir = paste0(priors, "_full_conditionals_paschold/")
   make_dirs(dir)  
   data(paschold)
-  counts = get("paschold_counts")
-  design = get("paschold_design")
-  sample_full_conditionals(dir, counts, design, priors = priors)
+  sample_full_conditionals(dir, paschold, priors = priors)
 }
 
 #' @title Function \code{full_conditionals_simulated}
@@ -108,8 +102,8 @@ full_conditionals_simulated = function(priors = "Laplace"){
   stopifnot(priors %in% alternate_priors())
   dir = paste0(priors, "_full_conditionals_simulated/")
   make_dirs(dir)
-  gen = generate_data()
-  sample_full_conditionals(dir, gen$counts, gen$design, starts = gen$truth, priors = priors)
+  s = scenario_heterosis_model()
+  sample_full_conditionals(dir, s, starts = s@supplement$truth, priors = priors)
 }
 
 #' @title Function \code{full_conditionals}

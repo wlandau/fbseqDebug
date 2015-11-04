@@ -4,15 +4,13 @@
 \alias{sample_full_conditionals}
 \title{Function \code{sample_full_conditionals}}
 \usage{
-sample_full_conditionals(dir, counts, design, starts = Starts(),
+sample_full_conditionals(dir, scenario, starts = Starts(),
   priors = "Laplace")
 }
 \arguments{
 \item{dir}{directory for output files}
 
-\item{counts}{RNA-seq count data matrix}
-
-\item{design}{Design matrix. See the \code{fbseq} package vignette for details.}
+\item{scenario}{a \code{fbseq::Scenario} object.}
 
 \item{starts}{A \code{fbseq::Starts} object of MCMC starting values.}
 
