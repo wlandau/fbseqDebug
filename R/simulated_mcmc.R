@@ -18,7 +18,7 @@ simulated_mcmc = function(priors = c("normal", alternate_priors()), diag = "gelm
     saveRDS(s, paste0("scenario_", prior, ".rds"))
 
     configs = Configs(diag = diag, max_attempts = 10, priors = prior, nchains_diag = 4,
-      genes_return = sample.int(dim(paschold@counts)[1], 2))
+      genes_return = sample.int(genes, 2))
     chain = Chain(s, configs)
     chain = fbseq(chain)
 
@@ -31,15 +31,6 @@ simulated_mcmc = function(priors = c("normal", alternate_priors()), diag = "gelm
     dev.off()
     pdf(paste0("density_", prior, ".pdf"))
     plot(flat, trace = F)
-    dev.off()
-
-    e = effect_sizes(chain)
-    e[,2] = -e[,2]
-    p = probs(chain)
-    x = as.numeric(e)
-    y = as.numeric(p)
-    pdf("volcano.pdf")
-    plot(y ~ x)
     dev.off()
 
     setwd("..")
