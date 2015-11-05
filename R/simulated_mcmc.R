@@ -32,6 +32,15 @@ simulated_mcmc = function(priors = c("normal", alternate_priors()), diag = "gelm
     plot(flat, trace = F)
     dev.off()
 
+    e = effect_sizes(chain)
+    e[,2] = -e[,2]
+    p = probs(chain)
+    x = as.numeric(e)
+    y = as.numeric(p)
+    pdf("volcano.pdf")
+    plot(y ~ x)
+    dev.off()
+
     setwd("..")
   }
 }
