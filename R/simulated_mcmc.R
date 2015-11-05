@@ -17,7 +17,8 @@ simulated_mcmc = function(priors = c("normal", alternate_priors()), diag = "gelm
     s = scenario_heterosis_model(genes = genes, libraries = libraries)
     saveRDS(s, paste0("scenario_", prior, ".rds"))
 
-    configs = Configs(diag = diag, max_attempts = 10, priors = prior, nchains_diag = 4)
+    configs = Configs(diag = diag, max_attempts = 10, priors = prior, nchains_diag = 4,
+      genes_return = sample.int(dim(paschold@counts)[1], 2))
     chain = Chain(s, configs)
     chain = fbseq(chain)
 

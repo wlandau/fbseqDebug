@@ -11,7 +11,8 @@ paschold_mcmc = function(priors = c("normal", alternate_priors()), diag = "gelma
     if(!file.exists(dir)) dir.create(dir)
     setwd(dir)
 
-    configs = Configs(diag = diag, max_attempts = 10, priors = prior, nchains_diag = 4)
+    configs = Configs(diag = diag, max_attempts = 10, priors = prior, nchains_diag = 4, 
+      genes_return = sample.int(dim(paschold@counts)[1], 2))
     chain = Chain(paschold, configs)
     chain = fbseq(chain)
 
