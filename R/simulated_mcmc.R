@@ -7,7 +7,7 @@ NULL
 #' @param priors alternate prior to try for phi, alpha, and delta
 #' @param diag can be "geweke" or "gelman"
 simulated_mcmc = function(priors = c("normal", alternate_priors()), diag = "gelman"){
-  libraries = 12
+  libraries = 16
   genes = 3.5e4
   for(prior in priors){
     dir = paste0("sim_", prior, "_", diag)
@@ -32,6 +32,7 @@ simulated_mcmc = function(priors = c("normal", alternate_priors()), diag = "gelm
     pdf(paste0("density_", prior, ".pdf"))
     plot(flat, trace = F)
     dev.off()
+    ggsave(filename = paste0("density_", prior, ".pdf"), plot = volcano(chain))
 
     setwd("..")
   }

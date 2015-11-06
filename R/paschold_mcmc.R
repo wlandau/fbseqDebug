@@ -24,6 +24,7 @@ paschold_mcmc = function(priors = c("normal", alternate_priors()), diag = "gelma
     pdf(paste0("density_", prior, ".pdf"))
     plot(flat, trace = F)
     dev.off()
+    ggsave(filename = paste0("density_", prior, ".pdf"), plot = volcano(chain))
 
     setwd("..")
   }
