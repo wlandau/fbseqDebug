@@ -1,5 +1,5 @@
 ---
-title: "`heterosisDebug` usage guide"
+title: "`fbseqDebug` usage guide"
 author: Will Landau
 date: 2015
 output: 
@@ -8,18 +8,24 @@ output:
     toc: true
 vignette: >
   \VignetteEngine{knitr::rmarkdown}
-  \VignetteIndexEntry{`heterosisDebug` usage guide}
+  \VignetteIndexEntry{`fbseqDebug` usage guide}
   \usepackage[utf8]{inputenc}
 ---
-
-The `heterosisDebug`
 
 
 # Purpose
 
-`heterosisStudies` is a companion package for debugging the `heterosis` and `heterosisCUDA` packages, available on [GitHub](https://github.com/wlandau). You will need both of these packages installed, and `heterosisCUDA` requires CUDA. See the `heterosisCUDA` package vignette for more details.
+`fbseqDebug` is a companion package for debugging the `fbseq` and `fbseqCUDA` packages, available on [GitHub](https://github.com/wlandau). You will need both of these packages installed, and `fbseqCUDA` requires CUDA. See the `fbseqCUDA` package vignette for more details.
 
 # Checking full conditionals
 
+The `full_conditionals` function uses both real maize data and simulated data to check each MCMC parameter against its true full conditional distribution and output relevant plots. For the histograms, MCMC samples are plotted with the true full conditional density overlayed as a line. Traceplots are also output. 
 
-The `full_conditionals_diag()` function uses both real maize data and simulated data to check each MCMC parameter against its true full conditional distribution and output relevant plots. For the histograms, MCMC samples are plotted with the true full conditional density overlayed as a line. Traceplots are also output. 
+# Checking approximate credible intervals
+
+The `fbseq` package estimates credible intervals using posterior means and posterior variances of parameters. This approach saves hundreds of megabytes of memory relative to calculations involving quantiles of Monte Carlo samples. However, the required distributional assumptions only approximately hold, so these credible intervals are only approximately correct. To that end, the `credible_debug` function checks the memory-efficient credible intervals with conventional quantile-intensive ones to make sure the two match well enough. Multiple plots are produced for that purpose.
+
+# Running example MCMCs
+
+The `paschold_mcmc` and `simulated_mcmc` functions run `fbseq` on real and simulated data, respectively, and produce output to assess how well the program is working.
+

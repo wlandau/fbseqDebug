@@ -31,11 +31,9 @@ sample_full_conditionals = function(dir, scenario, starts = Starts(), priors = "
     chain = Chain(scenario, configs, starts)
     chain@xiStart = runif(length(chain@xiStart), 0.5, 1.5)
     file = paste0(dir, "chains/", v, ".rds")
-    t0 = proc.time()
     chain = fbseq(chain)
-    t1 = proc.time() - t0
-    print(t1)
-    runtimes = rbind(runtimes, t1)
+    print(chain@runtime)
+    runtimes = rbind(runtimes, chain@runtime)
     saveRDS(chain, file)
   }
 
