@@ -27,7 +27,7 @@ sample_full_conditionals = function(dir, scenario, starts = Starts(), priors = "
   for(l in 1:L){
     v = paste0("beta_", l)
     print(v)
-    configs@betas_update = l
+    configs@effects_update_beta = l
     chain = Chain(scenario, configs, starts)
     chain@xiStart = runif(length(chain@xiStart), 0.5, 1.5)
     file = paste0(dir, "chains/", v, ".rds")
