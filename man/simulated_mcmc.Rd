@@ -4,12 +4,15 @@
 \alias{simulated_mcmc}
 \title{Function \code{simulated_mcmc}}
 \usage{
-simulated_mcmc(priors = c("normal", alternate_priors()), diag = "gelman")
+simulated_mcmc(priors = c("normal", alternate_priors()), diag = "gelman",
+  constrain_theta = c(T, F))
 }
 \arguments{
 \item{priors}{alternate prior to try for phi, alpha, and delta}
 
 \item{diag}{can be "geweke" or "gelman"}
+
+\item{constrain_theta}{set the constrain_theta slot int the \code{fbseq::Chain} object}
 }
 \description{
 Simulate data and try to recapture true parameter values

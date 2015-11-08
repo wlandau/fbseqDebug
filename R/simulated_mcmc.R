@@ -6,28 +6,20 @@ NULL
 #' @export
 #' @param priors alternate prior to try for phi, alpha, and delta
 #' @param diag can be "geweke" or "gelman"
-simulated_mcmc = function(priors = c("normal", alternate_priors()), diag = "gelman"){
+#' @param constrain_theta set the constrain_theta slot int the \code{fbseq::Chain} object
+simulated_mcmc = function(priors = c("normal", alternate_priors()), diag = "gelman", constrain_theta = c(T, F)){
   libraries = 16
   genes = 3.5e4
-  for(prior in priors){
-    dir = paste0("sim_", prior, "_", diag)
+  for(prior in priors) for(con in constrain_theta){
+    dir = paste0("sim_", prior, "_", diag, "_", con)
     if(!file.exists(dir)) dir.create(dir)
     setwd(dir)
 
     s = scenario_heterosis_model(genes = genes, libraries = libraries)
     saveRDS(s, paste0("scenario_", prior, ".rds"))
 
-    gs = sample.int(genes, 2)
-    ns = sample.int(libraries, 2)
-
-    configs = Configs(diag = diag, max_attempts = 10, priors = prior, nchains_diag = 4,
-      genes_return = gs, genes_return_epsilon = gs, libraries_return_epsilon = ns,
-
-      burnin = 1e7
-#      effects_update_theta = 1, 
-    )
+    configs = Configs(diag = diag, priors = prior, constrain_theta = con)
     chain = Chain(s, configs)
-#    chain@thetaStart[2:5] = 0
     chain = fbseq(chain)
 
     saveRDS(chain, paste0("chain_", prior, ".rds"))
