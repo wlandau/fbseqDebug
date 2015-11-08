@@ -22,9 +22,12 @@ simulated_mcmc = function(priors = c("normal", alternate_priors()), diag = "gelm
 
     configs = Configs(diag = diag, max_attempts = 10, priors = prior, nchains_diag = 4,
       genes_return = gs, genes_return_epsilon = gs, libraries_return_epsilon = ns,
-      effects_update_theta = 1, burnin = 1e4, thin = 10)
+
+      burnin = 1e7
+#      effects_update_theta = 1, 
+    )
     chain = Chain(s, configs)
-    chain@thetaStart[2:5] = 0
+#    chain@thetaStart[2:5] = 0
     chain = fbseq(chain)
 
     saveRDS(chain, paste0("chain_", prior, ".rds"))
