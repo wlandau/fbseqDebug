@@ -4,15 +4,12 @@
 \alias{paschold_mcmc}
 \title{Function \code{paschold_mcmc}}
 \usage{
-paschold_mcmc(priors = c("normal", alternate_priors()), diag = "gelman",
-  constrain_theta = c(T, F))
+paschold_mcmc(prior = "normal", diag = "gelman")
 }
 \arguments{
-\item{priors}{alternate prior to try for phi, alpha, and delta}
+\item{prior}{alternate prior to try for the betas}
 
-\item{diag}{can be "geweke", "gelman", or "none"}
-
-\item{constrain_theta}{set the constrain_theta slot int the \code{fbseq::Chain} object}
+\item{diag}{can be "gelman" or "none"}
 }
 \description{
 Run mcmc on paschold data and save output
