@@ -14,10 +14,10 @@ simulated_mcmc = function(prior = "normal", diag = "gelman"){
   if(!file.exists(dir)) dir.create(dir)
   setwd(dir)
 
-  s = scenario_heterosis_model(genes = genes, libraries = libraries)
+  s = scenario_heterosis_model(genes = genes)
   saveRDS(s, paste0("scenario_", prior, ".rds"))
 
-  configs = Configs(diag = diag, priors = prior)
+  configs = Configs(diag = diag, priors = prior, burnin = 1e4, thin = 10)
   chain = Chain(s, configs)
   chain = fbseq(chain)
 
