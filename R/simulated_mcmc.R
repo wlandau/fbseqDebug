@@ -6,7 +6,7 @@ NULL
 #' @export
 #' @param prior alternate prior to try for the betas
 #' @param diag can be "gelman" or "none"
-simulated_mcmc = function(prior = "normal", diag = "gelman"){
+simulated_mcmc = function(prior = "Laplace", diag = "gelman"){
   libraries = 16
   genes = 3.5e4
 
@@ -14,7 +14,7 @@ simulated_mcmc = function(prior = "normal", diag = "gelman"){
   if(!file.exists(dir)) dir.create(dir)
   setwd(dir)
 
-  s = scenario_heterosis_model(genes = genes)
+  s = scenario_heterosis_model(genes = genes, priors = prior)
   saveRDS(s, paste0("scenario_", prior, ".rds"))
 
   configs = Configs(diag = diag, priors = prior)

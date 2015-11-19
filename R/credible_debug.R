@@ -4,7 +4,7 @@
 #' @export
 #' @param priors alternate prior to try for phi, alpha, and delta
 #' @param diag can be "geweke", "gelman", or "none"
-credible_debug = function(priors = c("normal", alternate_priors()), diag = "none"){
+credible_debug = function(priors = c("normal", special_beta_priors()), diag = "none"){
   data(paschold)
 
   for(prior in priors){

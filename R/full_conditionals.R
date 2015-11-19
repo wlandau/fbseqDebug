@@ -9,20 +9,20 @@ NULL
 #' @param starts A \code{fbseq::Starts} object of MCMC starting values.
 #' @param priors name of prior distributions on the phi's, alpha's, and delta's.
 sample_full_conditionals = function(dir, scenario, starts = Starts(), priors = "Laplace"){
-  stopifnot(priors %in% alternate_priors())
+  stopifnot(priors %in% special_beta_priors())
   runtimes = NULL
 
-    L = dim(scenario@design)[2]
-    N = dim(scenario@counts)[2]
-    G = dim(scenario@counts)[1]
-    ns = sample.int(N, 12)
-    gs = sample.int(G, 12)
-    nse = sample.int(N, 3)
-    gse = sample.int(G, 4)
+  L = dim(scenario@design)[2]
+  N = dim(scenario@counts)[2]
+  G = dim(scenario@counts)[1]
+  ns = sample.int(N, 12)
+  gs = sample.int(G, 12)
+  nse = sample.int(N, 3)
+  gse = sample.int(G, 4)
 
-   configs = Configs(diag = "none", ess = 0, burnin = 1e3, iterations = 1e4, thin = 0, priors = priors,
-                                libraries_return = ns, genes_return = gs, libraries_return_epsilon = nse, genes_return_epsilon  = gse,
-                                parameter_sets_return = "beta", parameter_sets_update = "beta")
+  configs = Configs(diag = "none", ess = 0, burnin = 1e3, iterations = 1e4, thin = 0, priors = priors,
+                               libraries_return = ns, genes_return = gs, libraries_return_epsilon = nse, genes_return_epsilon  = gse,
+                               parameter_sets_return = "beta", parameter_sets_update = "beta")
 
   for(l in 1:L){
     v = paste0("beta_", l)
@@ -85,7 +85,7 @@ plot_full_conditionals = function(dir){
 #' @export
 #' @param priors name of prior distributions on the phi's, alpha's, and delta's.
 full_conditionals_paschold = function(priors = "Laplace"){
-  stopifnot(priors %in% alternate_priors())
+  stopifnot(priors %in% special_beta_priors())
   dir = paste0(priors, "_full_conditionals_paschold/")
   make_dirs(dir)  
   data(paschold)
@@ -97,10 +97,10 @@ full_conditionals_paschold = function(priors = "Laplace"){
 #' @export
 #' @param priors name of prior distributions on the phi's, alpha's, and delta's.
 full_conditionals_simulated = function(priors = "Laplace"){
-  stopifnot(priors %in% alternate_priors())
+  stopifnot(priors %in% special_beta_priors())
   dir = paste0(priors, "_full_conditionals_simulated/")
   make_dirs(dir)
-  s = scenario_heterosis_model()
+  s = scenario_heterosis_model(priors = priors)
   sample_full_conditionals(dir, s, starts = s@supplement$truth, priors = priors)
 }
 
@@ -108,9 +108,9 @@ full_conditionals_simulated = function(priors = "Laplace"){
 #' @description Check MCMC libraries against their full conditionals.
 #' @export
 #' @param priors names of prior distributions to try for phi, alpha, and delta.
-full_conditionals = function(priors = alternate_priors()){
+full_conditionals = function(priors = special_beta_priors()){
   for(prior in priors){
-    stopifnot(prior %in% alternate_priors())
+    stopifnot(prior %in% special_beta_priors())
     full_conditionals_paschold(priors = prior)
     plot_full_conditionals(paste0(prior, "_full_conditionals_paschold/"))
     full_conditionals_simulated(priors = prior)

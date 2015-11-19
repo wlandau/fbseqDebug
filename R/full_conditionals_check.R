@@ -179,14 +179,14 @@ xi_check = function(chain){
     xipm = matrix(chain@xiPostMean, nrow = chain@G)
     xipmsq = matrix(chain@xiPostMeanSquare, nrow = chain@G)
 
-    prior = alternate_priors()[chain@priors[l]]
+    prior = special_beta_priors()[chain@priors[l]]
     z = (Z$beta[g, l] - s@theta[l])^2/(2 * s@sigmaSquared[l])
     if(prior == "Laplace") {
       a = z
       b = s@k[l]
       lkern = function(x){-0.5*log(x) - a/x - b*x}
     } else if (prior == "t") {
-      a = s@k[l] + 1.5
+      a = s@q[l] + 1.5
       b = z + s@r[l]
       lkern = function(x){-a*log(x) - b/x}
     } else if (prior == "horseshoe") {
