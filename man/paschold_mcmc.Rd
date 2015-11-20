@@ -4,7 +4,7 @@
 \alias{paschold_mcmc}
 \title{Function \code{paschold_mcmc}}
 \usage{
-paschold_mcmc(prior = "normal", diag = "gelman")
+paschold_mcmc(prior = "Laplace", diag = "gelman")
 }
 \arguments{
 \item{prior}{alternate prior to try for the betas}

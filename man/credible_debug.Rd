@@ -4,7 +4,7 @@
 \alias{credible_debug}
 \title{Function \code{credible_debug}}
 \usage{
-credible_debug(priors = c("normal", alternate_priors()), diag = "none")
+credible_debug(priors = c("normal", special_beta_priors()), diag = "none")
 }
 \arguments{
 \item{priors}{alternate prior to try for phi, alpha, and delta}

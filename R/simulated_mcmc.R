@@ -14,7 +14,7 @@ simulated_mcmc = function(prior = "Laplace", diag = "gelman"){
   if(!file.exists(dir)) dir.create(dir)
   setwd(dir)
 
-  s = scenario_heterosis_model(genes = genes, priors = prior)
+  s = scenario_heterosis_model(genes = genes)
   saveRDS(s, paste0("scenario_", prior, ".rds"))
 
   configs = Configs(diag = diag, priors = prior)

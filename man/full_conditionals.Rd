@@ -4,7 +4,7 @@
 \alias{full_conditionals}
 \title{Function \code{full_conditionals}}
 \usage{
-full_conditionals(priors = alternate_priors())
+full_conditionals(priors = special_beta_priors())
 }
 \arguments{
 \item{priors}{names of prior distributions to try for phi, alpha, and delta.}

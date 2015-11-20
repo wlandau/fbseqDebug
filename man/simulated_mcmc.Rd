@@ -4,7 +4,7 @@
 \alias{simulated_mcmc}
 \title{Function \code{simulated_mcmc}}
 \usage{
-simulated_mcmc(prior = "normal", diag = "gelman")
+simulated_mcmc(prior = "Laplace", diag = "gelman")
 }
 \arguments{
 \item{prior}{alternate prior to try for the betas}
