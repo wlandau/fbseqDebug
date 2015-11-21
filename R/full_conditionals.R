@@ -24,12 +24,13 @@ sample_full_conditionals = function(dir, scenario, starts = Starts(), priors = "
                                libraries_return = ns, genes_return = gs, libraries_return_epsilon = nse, genes_return_epsilon  = gse,
                                parameter_sets_return = "beta", parameter_sets_update = "beta")
 
+  starts@xi = runif(G*L, 0.5, 1.5)
+
   for(l in 1:L){
     v = paste0("beta_", l)
     print(v)
     configs@effects_update_beta = l
     chain = Chain(scenario, configs, starts)
-    chain@xiStart = runif(length(chain@xiStart), 0.5, 1.5)
     file = paste0(dir, "chains/", v, ".rds")
     chain = fbseq(chain)
     print(chain@runtime)
@@ -42,7 +43,6 @@ sample_full_conditionals = function(dir, scenario, starts = Starts(), priors = "
     print(v)
     configs@parameter_sets_return = configs@parameter_sets_update = v
     chain = Chain(scenario, configs, starts)
-    chain@xiStart = runif(length(chain@xiStart), 0.5, 1.5)
     file = paste0(dir, "chains/", v, ".rds")
     t0 = proc.time()
     chain = fbseq(chain)

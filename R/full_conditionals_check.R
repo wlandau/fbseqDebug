@@ -46,7 +46,7 @@ epsilon_check = function(chain){
     A = y[g, n]
     B = 1/(2*s@gamma[g])
     C = 0
-    D = exp(sum(Z$s@h[n] + design[n,] * Z$beta[g,]))
+    D = exp(Z$s@h[n] + sum(design[n,] * Z$beta[g,]))
 
     lkern = function(x){A*x - B*(x-C)^2 - D*exp(x)}
     plotfc(x, lkern, v, epm[g, n], sqrt(epmsq[g, n]))
@@ -93,7 +93,7 @@ sigmaSquared_check = function(chain){
   attach(Z, warn.conflicts = F)
   for(v in colnames(flat)){
     x = as.numeric(flat[,v])
-    l = as.integer(gsub(paste0(name, "_"), "", v))
+    l = as.integer(gsub(paste0("sigmaSquared_"), "", v))
     shape = (G - 1)/2
     scale = 0.5 * sum((Z$beta[,l] - s@theta[l])^2/xi[,l])
     lkern = function(x){ldig(x, shape, scale)}
