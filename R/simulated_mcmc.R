@@ -19,8 +19,9 @@ simulated_mcmc = function(prior = "Laplace", diag = "gelman"){
 
   configs = Configs(diag = diag, priors = prior)
   chain = Chain(s, configs, starts = Starts(h = 0))
-  chain = fbseq(chain)
+  saveRDS(chain, paste0("chain_begin_", prior, ".rds"))
 
+  chain = fbseq(chain)
   saveRDS(chain, paste0("chain_", prior, ".rds"))
   comp = compare_points(chain, s@supplement$truth)
   write.table(comp, file = paste0("mcmc_vs_truth_", prior, ".txt"))

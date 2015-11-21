@@ -12,8 +12,9 @@ paschold_mcmc = function(prior = "Laplace", diag = "gelman"){
 
   configs = Configs(diag = diag, priors = prior)
   chain = Chain(paschold, configs)
-  chain = fbseq(chain)
+  saveRDS(chain, paste0("chain_begin_", prior, ".rds"))
 
+  chain = fbseq(chain)
   saveRDS(chain, paste0("chain_", prior, ".rds"))
   flat = mcmc(flatten(chain))
   pdf(paste0("trace_", prior, ".pdf"))
