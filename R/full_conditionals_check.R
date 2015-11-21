@@ -21,7 +21,7 @@ beta_check = function(chain){
     C = Z$s@theta[l]
 
     lkern = Vectorize(function(x){
-      A*x - B* (x - C)^2 - sum(exp(Z$design[,l] * x) * exp( Z$epsilon[g, ] + Z$design[,-l] %*% Z$beta[g, -l]))
+      A*x - B* (x - C)^2 - sum(exp(Z$design[,l] * x) * exp(s@h + Z$epsilon[g, ] + Z$design[,-l] %*% Z$beta[g, -l]))
     }, "x")
 
     plotfc(x, lkern, v, bpm[g, l], sqrt(bpmsq[g, l]))
@@ -45,8 +45,8 @@ epsilon_check = function(chain){
 
     A = y[g, n]
     B = 1/(2*s@gamma[g])
-    C = s@rho[n]
-    D = exp(sum(design[n,] * Z$beta[g,]))
+    C = 0
+    D = exp(sum(s@h[n] + design[n,] * Z$beta[g,]))
 
     lkern = function(x){A*x - B*(x-C)^2 - D*exp(x)}
     plotfc(x, lkern, v, epm[g, n], sqrt(epmsq[g, n]))
@@ -64,27 +64,11 @@ gamma_check = function(chain){
     g = as.integer(gsub(paste0(name, "_"), "", v))
 
     shape = (N + s@nu[1])/2
-    scale = (s@nu[1]*s@tau[1] + sum((epsilon[g,] - s@rho)^2))/2
+    scale = (s@nu[1]*s@tau[1] + sum(epsilon[g,]^2))/2
 
     lkern = function(x){ldig(x, shape, scale)}
     plotfc(x, lkern, v, chain@gammaPostMean[g], sqrt(chain@gammaPostMeanSquare[g]))
   }
-}
-
-#' @title \code{*_check} functions
-#' @description Check MCMC parameter samples against the true full conditional.
-#' @export
-#' @param chain a \code{fbseq::Chain} object
-omegaSquared_check = function(chain){
-  attach(inits(chain), warn.conflicts = F)
-  v = "omegaSquared"
-  x = as.numeric(flat[,v])
-
-  shape = (N - 1)/2
-  scale = sum(s@rho^2)/2
-
-  lkern = function(x){ldig(x, shape, scale)}
-  plotfc(x, lkern, v, chain@omegaSquaredPostMean, sqrt(chain@omegaSquaredPostMeanSquare))
 }
 
 #' @title \code{*_check} functions
@@ -98,23 +82,6 @@ nu_check = function(chain){
     (x/2) * sum(log(s@gamma) + s@tau[1]/s@gamma)
   }
   plotfc(as.numeric(flat), lkern, name, chain@nuPostMean, sqrt(chain@nuPostMeanSquare))
-}
-
-#' @title \code{*_check} functions
-#' @description Check MCMC parameter samples against the true full conditional.
-#' @export
-#' @param chain a \code{fbseq::Chain} object
-rho_check = function(chain){
-  Z = inits(chain)
-  attach(Z, warn.conflicts = F)
-  for(v in colnames(flat)){
-    x = as.numeric(flat[,v])
-    n = as.integer(gsub(paste0(name, "_"), "", v))
-    A = (1/s@omegaSquared + sum(1/s@gamma))/2
-    B = sum(Z$epsilon[,n]/s@gamma)
-    lkern = function(x){dnorm(x, mean = B/(2*A), sd = sqrt(1/(2*A)), log = T)}
-    plotfc(x, lkern, v, chain@rhoPostMean[n], sqrt(chain@rhoPostMeanSquare[n]))
-  }
 }
 
 #' @title \code{*_check} functions

@@ -18,7 +18,7 @@ simulated_mcmc = function(prior = "Laplace", diag = "gelman"){
   saveRDS(s, paste0("scenario_", prior, ".rds"))
 
   configs = Configs(diag = diag, priors = prior)
-  chain = Chain(s, configs)
+  chain = Chain(s, configs, starts = Starts(h = 0))
   chain = fbseq(chain)
 
   saveRDS(chain, paste0("chain_", prior, ".rds"))
