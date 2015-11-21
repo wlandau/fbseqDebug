@@ -21,7 +21,7 @@ beta_check = function(chain){
     C = Z$s@theta[l]
 
     lkern = Vectorize(function(x){
-      A*x - B* (x - C)^2 - sum(exp(Z$design[,l] * x) * exp(s@h + Z$epsilon[g, ] + Z$design[,-l] %*% Z$beta[g, -l]))
+      A*x - B* (x - C)^2 - sum(exp(Z$design[,l] * x) * exp(Z$s@h + Z$epsilon[g, ] + Z$design[,-l] %*% Z$beta[g, -l]))
     }, "x")
 
     plotfc(x, lkern, v, bpm[g, l], sqrt(bpmsq[g, l]))
@@ -46,7 +46,7 @@ epsilon_check = function(chain){
     A = y[g, n]
     B = 1/(2*s@gamma[g])
     C = 0
-    D = exp(sum(s@h[n] + design[n,] * Z$beta[g,]))
+    D = exp(sum(Z$s@h[n] + design[n,] * Z$beta[g,]))
 
     lkern = function(x){A*x - B*(x-C)^2 - D*exp(x)}
     plotfc(x, lkern, v, epm[g, n], sqrt(epmsq[g, n]))

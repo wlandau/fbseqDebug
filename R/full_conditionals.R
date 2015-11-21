@@ -100,7 +100,10 @@ full_conditionals_simulated = function(priors = "Laplace"){
   stopifnot(priors %in% special_beta_priors())
   dir = paste0(priors, "_full_conditionals_simulated/")
   make_dirs(dir)
-  s = scenario_heterosis_model(priors = priors)
+  s = scenario_heterosis_model(
+    truth = Starts(h = c(-0.5, 0, 0.5), nu = 2.812224, tau = 0.006780517, sigmaSquared = c(1, 
+        0.03724313, 0.0324207, 0.0006229287, 0.06410533), theta = c(3, 
+        -0.005734982, -0.02541216, -0.004763663, -0.06341044)))
   sample_full_conditionals(dir, s, starts = s@supplement$truth, priors = priors)
 }
 
