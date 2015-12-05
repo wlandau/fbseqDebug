@@ -20,8 +20,9 @@ sample_full_conditionals = function(dir, scenario, starts = Starts(), priors = "
   nse = sample.int(N, 3)
   gse = sample.int(G, 4)
 
-  configs = Configs(diag = "none", ess = 0, burnin = 1e3, iterations = 1e4, thin = 0, priors = priors,
-                               libraries_return = ns, genes_return = gs, libraries_return_epsilon = nse, genes_return_epsilon  = gse,
+  configs = Configs(diag = "none", burnin = 1e3, iterations = 1e3, thin = 10, priors = priors,
+                               libraries_return = ns, genes_return = gs, libraries_return_epsilon = nse, 
+                               genes_return_epsilon  = gse,
                                parameter_sets_return = "beta", parameter_sets_update = "beta")
 
   starts@xi = runif(G*L, 0.5, 1.5)
