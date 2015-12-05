@@ -3,7 +3,7 @@
 #' @export
 #' @param prior alternate prior to try for the betas
 #' @param diag can be "gelman" or "none"
-paschold_mcmc = function(prior = "Laplace", diag = "gelman"){
+paschold_mcmc = function(prior = "normal", diag = "gelman"){
   data(paschold)
 
   dir = paste0("paschold_", prior, "_", diag)
