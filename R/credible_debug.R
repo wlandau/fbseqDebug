@@ -14,7 +14,7 @@ credible_debug = function(priors = c("normal", special_beta_priors())){
     N = dim(paschold@counts)[2]
     G = dim(paschold@counts)[1]
 
-    configs = Configs(priors = prior, iterations = 1e4, thin = 0, burnin = 1e3,
+    configs = Configs(priors = prior, iterations = 1e4, thin = 1, burnin = 1e3,
       genes_return = sample.int(G, 12), libraries_return = sample.int(N, 12),
       genes_return_epsilon = sample.int(G, 4), libraries_return_epsilon = sample.int(N, 3))
     chain = Chain(paschold, configs)
