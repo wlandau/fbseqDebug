@@ -4,12 +4,10 @@
 \alias{credible_debug}
 \title{Function \code{credible_debug}}
 \usage{
-credible_debug(priors = c("normal", special_beta_priors()), diag = "none")
+credible_debug(priors = c("normal", special_beta_priors()))
 }
 \arguments{
 \item{priors}{alternate prior to try for phi, alpha, and delta}
-
-\item{diag}{can be "geweke", "gelman", or "none"}
 }
 \description{
 Run mcmc on paschold data and check crude credible intervals against actual quantile

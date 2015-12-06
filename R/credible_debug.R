@@ -3,8 +3,7 @@
 #' credible intervals
 #' @export
 #' @param priors alternate prior to try for phi, alpha, and delta
-#' @param diag can be "geweke", "gelman", or "none"
-credible_debug = function(priors = c("normal", special_beta_priors()), diag = "none"){
+credible_debug = function(priors = c("normal", special_beta_priors())){
   data(paschold)
 
   for(prior in priors){
@@ -15,18 +14,19 @@ credible_debug = function(priors = c("normal", special_beta_priors()), diag = "n
     N = dim(paschold@counts)[2]
     G = dim(paschold@counts)[1]
 
-    configs = Configs(diag = "none", priors = prior, iterations = 1e3, thin = 10, burnin = 1e3,
+    configs = Configs(priors = prior, iterations = 1e3, thin = 10, burnin = 1e3,
       genes_return = sample.int(G, 12), libraries_return = sample.int(N, 12),
       genes_return_epsilon = sample.int(G, 4), libraries_return_epsilon = sample.int(N, 3))
     chain = Chain(paschold, configs)
-    chain = fbseq(chain)
-    saveRDS(chain, "chain.rds")
+    out = fbseq(chain)
+    saveRDS(out, "out.rds")
 
-    flat = flatten(chain)
-    est = estimates(chain)
+    samples = mcmc_samples(out)
+    estimates = estimates(out)
 
-    for(name in colnames(flat)){
-      x = flat[,name]
+    for(name in colnames(samples)){
+      x = samples[,name]
+      realmean = mean(x)
       qlow = quantile(x, 0.025)
       qhigh = quantile(x, 0.975)
       if(length(unique(x)) > 3)
@@ -38,10 +38,12 @@ credible_debug = function(priors = c("normal", special_beta_priors()), diag = "n
         labs(title = paste0(name, "\n")) + 
         xlab("\nMCMC libraries") +
         ylab("Density\n") +
-        geom_vline(xintercept = est[name, "lower_ci_0.95"], color = "blue", linetype = 6) +
-        geom_vline(xintercept = qlow, color = "green") +
-        geom_vline(xintercept = est[name, "upper_ci_0.95"], color = "red", linetype = 6) +
-        geom_vline(xintercept = qhigh, color = "black") +
+        geom_vline(xintercept = estimates[name, "mean"], color = "green", linetype = 6) +
+        geom_vline(xintercept = realmean, color = "green") +
+        geom_vline(xintercept = estimates[name, "lower_ci_0.95"], color = "blue", linetype = 6) +
+        geom_vline(xintercept = qlow, color = "blue") +
+        geom_vline(xintercept = estimates[name, "upper_ci_0.95"], color = "red", linetype = 6) +
+        geom_vline(xintercept = qhigh, color = "red") +
         theme(panel.background = element_rect(fill='white'),
                    panel.border = element_rect(color="black", fill = NA),
                    panel.grid.major = element_line(color="lightgray"),

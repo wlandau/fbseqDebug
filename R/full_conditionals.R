@@ -20,7 +20,7 @@ sample_full_conditionals = function(dir, scenario, starts = Starts(), priors = "
   nse = sample.int(N, 3)
   gse = sample.int(G, 4)
 
-  configs = Configs(diag = "none", burnin = 1e3, iterations = 1e3, thin = 10, priors = priors,
+  configs = Configs(burnin = 1e3, iterations = 1e3, thin = 10, priors = priors,
                                libraries_return = ns, genes_return = gs, libraries_return_epsilon = nse, 
                                genes_return_epsilon  = gse,
                                parameter_sets_return = "beta", parameter_sets_update = "beta")
@@ -33,9 +33,11 @@ sample_full_conditionals = function(dir, scenario, starts = Starts(), priors = "
     configs@effects_update_beta = l
     chain = Chain(scenario, configs, starts)
     file = paste0(dir, "chains/", v, ".rds")
-    chain = fbseq(chain)
-    print(chain@runtime)
-    runtimes = rbind(runtimes, chain@runtime)
+    t0 = proc.time()
+    chain = fbseq(chain, additional_chains = 0)
+    t1 = proc.time() - t0
+    print(t1)
+    runtimes = rbind(runtimes, t1)
     saveRDS(chain, file)
   }
 
@@ -46,7 +48,7 @@ sample_full_conditionals = function(dir, scenario, starts = Starts(), priors = "
     chain = Chain(scenario, configs, starts)
     file = paste0(dir, "chains/", v, ".rds")
     t0 = proc.time()
-    chain = fbseq(chain)
+    chain = fbseq(chain, additional_chains = 0)
     t1 = proc.time() - t0
     print(t1)
     runtimes = rbind(runtimes, t1)
