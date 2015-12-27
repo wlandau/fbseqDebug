@@ -3,20 +3,20 @@
 #' @export
 #' @param prior alternate prior to try for the betas
 #' @param diag can be "gelman" or "none"
-paschold_mcmc = function(prior = "normal", diag = "gelman"){
+paschold_mcmc = function(prior = "normal"){
   data(paschold)
 
   dir = paste0("paschold_", prior, "_", diag)
   if(!file.exists(dir)) dir.create(dir)
   setwd(dir)
 
-  configs = Configs(diag = diag, priors = prior)
+  configs = Configs(priors = prior, burnin = 1e4, thin = 10, iterations = 1e3)
   chain = Chain(paschold, configs)
   saveRDS(chain, paste0("chain_begin_", prior, ".rds"))
 
   chain = fbseq(chain)
   saveRDS(chain, paste0("chain_", prior, ".rds"))
-  flat = mcmc(flatten(chain))
+  flat = mcmc(mcmc_samples(chain))
   pdf(paste0("trace_", prior, ".pdf"))
   plot(flat, density = F)
   dev.off()
