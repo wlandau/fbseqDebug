@@ -4,12 +4,10 @@
 \alias{paschold_mcmc}
 \title{Function \code{paschold_mcmc}}
 \usage{
-paschold_mcmc(prior = "normal", diag = "gelman")
+paschold_mcmc(prior = "normal")
 }
 \arguments{
 \item{prior}{alternate prior to try for the betas}
-
-\item{diag}{can be "gelman" or "none"}
 }
 \description{
 Run mcmc on paschold data and save output

@@ -4,12 +4,10 @@
 \alias{simulated_mcmc}
 \title{Function \code{simulated_mcmc}}
 \usage{
-simulated_mcmc(prior = "Laplace", diag = "gelman")
+simulated_mcmc(prior = "normal")
 }
 \arguments{
 \item{prior}{alternate prior to try for the betas}
-
-\item{diag}{can be "gelman" or "none"}
 }
 \description{
 Simulate data and try to recapture true parameter values
