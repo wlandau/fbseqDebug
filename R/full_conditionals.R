@@ -20,7 +20,7 @@ sample_full_conditionals = function(dir, scenario, starts = Starts(), priors = "
   nse = sample.int(N, 3)
   gse = sample.int(G, 4)
 
-  configs = Configs(burnin = 1e3, iterations = 1e4, thin = 1, priors = priors,
+  configs = Configs(burnin = 1e3, iterations = 1e4, thin = 1, priors = "normal",
                                libraries_return = ns, genes_return = gs, libraries_return_epsilon = nse, 
                                genes_return_epsilon  = gse,
                                parameter_sets_return = "beta", parameter_sets_update = "beta")
@@ -45,6 +45,7 @@ sample_full_conditionals = function(dir, scenario, starts = Starts(), priors = "
   for(v in vars){
     print(v)
     configs@parameter_sets_return = configs@parameter_sets_update = v
+    configs@priors = ifelse(v == "xi", priors, "normal")
     chain = Chain(scenario, configs, starts)
     file = paste0(dir, "chains/", v, ".rds")
     t0 = proc.time()
