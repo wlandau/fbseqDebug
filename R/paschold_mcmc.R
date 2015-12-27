@@ -9,7 +9,7 @@ paschold_mcmc = function(prior = "normal"){
   if(!file.exists(dir)) dir.create(dir)
   setwd(dir)
 
-  configs = Configs(priors = prior, burnin = 1e4, thin = 10, iterations = 1e3)
+  configs = Configs(priors = prior)
   chain = Chain(paschold, configs)
   saveRDS(chain, paste0("chain_begin_", prior, ".rds"))
 
