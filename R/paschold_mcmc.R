@@ -2,11 +2,10 @@
 #' @description Run mcmc on paschold data and save output
 #' @export
 #' @param prior alternate prior to try for the betas
-#' @param diag can be "gelman" or "none"
 paschold_mcmc = function(prior = "normal"){
   data(paschold)
 
-  dir = paste0("paschold_", prior, "_", diag)
+  dir = paste0("paschold_", prior)
   if(!file.exists(dir)) dir.create(dir)
   setwd(dir)
 

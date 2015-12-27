@@ -5,12 +5,11 @@ NULL
 #' @description Simulate data and try to recapture true parameter values
 #' @export
 #' @param prior alternate prior to try for the betas
-#' @param diag can be "gelman" or "none"
-simulated_mcmc = function(prior = "normal", diag = "gelman"){
+simulated_mcmc = function(prior = "normal"){
   libraries = 16
   genes = 3e4
 
-  dir = paste0("sim_", prior, "_", diag)
+  dir = paste0("sim_", prior)
   if(!file.exists(dir)) dir.create(dir)
   setwd(dir)
 
