@@ -34,7 +34,7 @@ sample_full_conditionals = function(dir, scenario, starts = Starts(), priors = "
     chain = Chain(scenario, configs, starts)
     file = paste0(dir, "chains/", v, ".rds")
     t0 = proc.time()
-    chain = fbseq(chain, additional_chains = 0)
+    chain = fbseq(chain, backend = "serial", additional_chains = 0)
     t1 = proc.time() - t0
     print(t1)
     runtimes = rbind(runtimes, t1)
@@ -49,7 +49,7 @@ sample_full_conditionals = function(dir, scenario, starts = Starts(), priors = "
     chain = Chain(scenario, configs, starts)
     file = paste0(dir, "chains/", v, ".rds")
     t0 = proc.time()
-    chain = fbseq(chain, additional_chains = 0)
+    chain = fbseq(chain, backend = "serial", additional_chains = 0)
     t1 = proc.time() - t0
     print(t1)
     runtimes = rbind(runtimes, t1)
@@ -93,6 +93,7 @@ full_conditionals_paschold = function(priors = "Laplace"){
   dir = paste0(priors, "_full_conditionals_paschold/")
   make_dirs(dir)  
   data(paschold)
+  paschold@counts = paschold@counts[1:50,]
   sample_full_conditionals(dir, paschold, priors = priors)
 }
 
@@ -104,7 +105,7 @@ full_conditionals_simulated = function(priors = "Laplace"){
   stopifnot(priors %in% special_beta_priors())
   dir = paste0(priors, "_full_conditionals_simulated/")
   make_dirs(dir)
-  s = scenario_heterosis_model(
+  s = scenario_heterosis_model(genes = 50,
     truth = Starts(h = c(-0.5, 0, 0.5), nu = 2.812224, tau = 0.006780517, sigmaSquared = c(1, 
         0.03724313, 0.0324207, 0.0006229287, 0.06410533), theta = c(3, 
         -0.005734982, -0.02541216, -0.004763663, -0.06341044)))
