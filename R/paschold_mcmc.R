@@ -13,7 +13,7 @@ paschold_mcmc = function(prior = "normal"){
   chain = Chain(paschold, configs)
   saveRDS(chain, paste0("chain_begin_", prior, ".rds"))
 
-  chain = fbseq(chain)
+  chain = fbseq(chain, backend = "OpenMP", threads = 4)
   saveRDS(chain, paste0("chain_", prior, ".rds"))
   flat = mcmc(mcmc_samples(chain))
   pdf(paste0("trace_", prior, ".pdf"))

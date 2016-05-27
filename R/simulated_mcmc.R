@@ -20,7 +20,7 @@ simulated_mcmc = function(prior = "normal"){
   chain = Chain(s, configs, starts = Starts(h = 0))
   saveRDS(chain, paste0("chain_begin_", prior, ".rds"))
 
-  chain = fbseq(chain)
+  chain = fbseq(chain, backend = "OpenMP", threads = 4)
   saveRDS(chain, paste0("chain_", prior, ".rds"))
   comp = compare_points(chain, s@supplement$truth)
   write.table(comp, file = paste0("mcmc_vs_truth_", prior, ".txt"))
