@@ -34,7 +34,7 @@ sample_full_conditionals = function(dir, scenario, starts = Starts(), priors = "
     chain = Chain(scenario, configs, starts)
     file = paste0(dir, "chains/", v, ".rds")
     t0 = proc.time()
-    chain = fbseq(chain, backend = "serial", additional_chains = 0)
+    chain = fbseq(chain, backend = "OpenMP", threads = 4, additional_chains = 0)
     t1 = proc.time() - t0
     print(t1)
     runtimes = rbind(runtimes, t1)
@@ -49,7 +49,7 @@ sample_full_conditionals = function(dir, scenario, starts = Starts(), priors = "
     chain = Chain(scenario, configs, starts)
     file = paste0(dir, "chains/", v, ".rds")
     t0 = proc.time()
-    chain = fbseq(chain, backend = "serial", additional_chains = 0)
+    chain = fbseq(chain, backend = "OpenMP", threads = 4, additional_chains = 0)
     t1 = proc.time() - t0
     print(t1)
     runtimes = rbind(runtimes, t1)
