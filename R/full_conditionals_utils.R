@@ -28,11 +28,12 @@ inits = function(chain){
 #' @param name name of the parameter
 #' @param postmean posterior mean
 #' @param postmeansq posterior mean of squares
-plotfc = function(x, lkern, name, postmean = NULL, postmeansq = NULL){
+#' @param upperq Location of upper quantile for cutoff
+plotfc = function(x, lkern, name, postmean = NULL, postmeansq = NULL, upperq = 0.9975){
   if(!is.null(postmean) & !is.null(postmeansq)) postmeansq = postmeansq * sign(postmean)
   x = as.numeric(x)
   if(length(unique(x)) > 3)
-    x = x[x > quantile(x, 0.0025) & x < quantile(x, 0.9975)]
+    x = x[x > quantile(x, 0.0025) & x < quantile(x, upperq)]
   m = mean(x)
   xs = seq(min(x), max(x), length.out = 1e3)
   area = trapz(xs, exp(lkern(xs) - lkern(m)))

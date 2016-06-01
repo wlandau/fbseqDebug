@@ -162,6 +162,6 @@ xi_check = function(chain){
       lkern = function(x){ifelse(x > 0.9 & x < 1.1, 1, 0)}
     }
 
-    plotfc(x, lkern, v, xipm[g, l], sqrt(xipmsq[g, l]))
+    plotfc(x, lkern, v, xipm[g, l], sqrt(xipmsq[g, l]), upperq = 0.95)
   }
 }
