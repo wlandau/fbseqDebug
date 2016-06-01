@@ -32,7 +32,7 @@ plotfc = function(x, lkern, name, postmean = NULL, postmeansq = NULL){
   if(!is.null(postmean) & !is.null(postmeansq)) postmeansq = postmeansq * sign(postmean)
   x = as.numeric(x)
   if(length(unique(x)) > 3)
-    x = x[x > quantile(x, 0.0025) & x < quantile(x, 0.9975)]
+    x = x[x > quantile(x, 0.0025) & x < quantile(x, 0.975)]
   m = mean(x)
   xs = seq(min(x), max(x), length.out = 1e3)
   area = trapz(xs, exp(lkern(xs) - lkern(m)))
