@@ -121,7 +121,7 @@ full_conditionals = function(priors = special_beta_priors()){
     stopifnot(prior %in% special_beta_priors())
     full_conditionals_paschold(priors = prior)
     plot_full_conditionals(paste0(prior, "_full_conditionals_paschold/"))
-    full_conditionals_simulated(priors = prior)
-    plot_full_conditionals(paste0(prior, "_full_conditionals_simulated/"))
+ #   full_conditionals_simulated(priors = prior)
+ #   plot_full_conditionals(paste0(prior, "_full_conditionals_simulated/"))
   }
 }
