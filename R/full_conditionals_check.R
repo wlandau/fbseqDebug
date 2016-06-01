@@ -163,6 +163,6 @@ xi_check = function(chain){
     }
 
     plotfc(x, lkern, v, xipm[g, l], 0, # sqrt(xipmsq[g, l]), 
-      upperq = 0.99)
+      upperq = 0.95)
   }
 }
